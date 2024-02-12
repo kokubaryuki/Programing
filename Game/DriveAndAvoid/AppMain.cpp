@@ -14,6 +14,20 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 	//例外処理(異常が発生したら、catch文に飛びます)
 	try
 	{
+		double dNextTime = GetNowCount();
+
+		SetMainWindowText("クルブラ");
+
+		ChangeWindowMode(TRUE);		// ウィンドウモードで起動
+
+		SetAlwaysRunFlag(true);		//常にアクティブにする
+
+		SetGraphMode(1280, 720, 32);	//画面サイズの設定
+
+		if (DxLib_Init() == -1) return -1;	// DXライブラリの初期化処理
+
+		SetDrawScreen(DX_SCREEN_BACK);	// 描画先画面を裏にする
+
 		//シーンマネージャー機能の生成
 		SceneManager manager;
 
