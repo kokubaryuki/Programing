@@ -38,6 +38,7 @@ public:
 	float GetHp()const;            //体力取得
 	int GetBarriarCount()const;    //バリアの枚数取得
 	bool IsBarrier()const;         //バリアは有効か？を取得
+	void Playerdie() const;        // プレイヤー死ぬ
 
 private:
 
