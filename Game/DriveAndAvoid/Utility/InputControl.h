@@ -1,6 +1,10 @@
 #pragma once
 
 #include"Vector2D.h"
+#include"math.h"
+
+#define DEEDZOON 10000.0f
+
 //“ü—ÍŠÇ—‹@”\
 class InputControl
 {

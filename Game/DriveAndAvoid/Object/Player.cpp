@@ -1,5 +1,6 @@
 #include"Player.h"
 #include"../Utility/InputControl.h"
+#include"math.h"
 #include "DxLib.h"
 
 Player::Player() :is_active(false), image(NULL), location(0.0f), box_size(0.0f),
@@ -86,6 +87,17 @@ void Player::Update()
 //描画処理
 void Player::Draw()
 {
+	//空でなければ配列の先頭を描画
+	//if (!v.empty()) {
+	//	DrawRotaGraphF(v[0].first.x, v[0].first.y, 1.0, v[0].second, image, TRUE);
+	//	//先頭要素を削除
+	//	v.erase(v.begin());
+	//}
+	//else {
+	//	
+	//}
+	
+
 	DrawRotaGraphF(location.x, location.y, 1.0, angle, image, TRUE);
 
 	//バリアが生成されていたら、描画を行う
@@ -93,6 +105,9 @@ void Player::Draw()
 	{
 		barrier->Draw(this->location);
 	}
+	DrawFormatString(0.0, 0.0, 0xffffff, "radt = %f", radt);
+	DrawFormatString(0.0, 12.0, 0xffffff, "x = %f y = %f", direction.x, direction.y);
+	DrawFormatString(0.0, 24.0, 0xffffff, "acce = %f", acceleration);
 }
 
 
@@ -169,32 +184,55 @@ bool Player::IsBarrier() const
 void Player::Movement()
 {
 	Vector2D move = Vector2D(0.0f);
-	angle = 0.0f;
-
-	//十字移動処理
-	if (InputControl::GetButton(XINPUT_BUTTON_DPAD_LEFT))
+	////////////////////////////////////////////////////////
+	direction = InputControl::GetLeftStick();
+	
+	//入力無しなら減速
+	if (direction.x == 0.0f && direction.y == 0.0f) 
 	{
-		move += Vector2D(-1.0f, 0.0f);
-		angle = -DX_PI_F / 18;
-	}
+		acceleration -= ACCELERATION;
+		if (acceleration < 0.0f) 
+		{
+			acceleration = 0.0f;
+		}
 
-	if (InputControl::GetButton(XINPUT_BUTTON_DPAD_RIGHT))
+	}
+	//入力有りなら加速
+	else 
 	{
-		move += Vector2D(1.0f, 0.0f);
-		angle = DX_PI_F / 18;
-	}
+		acceleration += ACCELERATION;
+		if (acceleration >= 12.0f) 
+		{
+			acceleration = 12.0f;
+		}
+		//入力中のみ車体の向きを反映させる。(※atan2はラジアン、180/πを掛けると度数法に変換できる
+		radt = atan2(direction.y, direction.x);/*  (180/ DX_PI_F)*/;
+		
+		//if (v.empty()) {
+		//	//１つ目の要素ならdelay開始
+		//	start_delay = true;
 
-	if (InputControl::GetButton(XINPUT_BUTTON_DPAD_UP))
-	{
-		move += Vector2D(0.0f, -1.0f);
-	}
+		//	v.push_back(old_move);
+		//}
+		//else {
+		//	
+		//}
+		//location += direction;
 
-	if (InputControl::GetButton(XINPUT_BUTTON_DPAD_DOWN))
-	{
-		move += Vector2D(0.0f, 1.0);
+		//数フレーム遅れさせる処理
+		/*std::pair<Vector2D, float>move_data = { location,angle };
+		v.push_back(move_data);*/
 	}
+	//方向に加速度をかける
+	direction *= acceleration;
 
-	location += move;
+	//ラジアンをfloatキャスト
+	angle = static_cast<float>(radt);
+
+	//現在地+移動量
+	location += direction;
+	
+	/////////////////////////////////////////////////////
 
 	//画像外に行かないように制限する
 	if ((location.x < box_size.x) || (location.x >= 640.0f - 180.0f) ||
@@ -203,6 +241,27 @@ void Player::Movement()
 		location -= move;
 	}
 
+}
+
+//配列に要素が入り始めたらdelayスタート
+void Player::DelayDrive(std::vector<std::pair<Vector2D, float>> vec)
+{
+	//if (start_delay == true) {
+	//	delay_count++;
+
+	//}
+	//else 
+	//{
+	//	if (!vec.empty()) {
+	//		location = v.begin()->first;
+	//		angle = v.begin()->second;
+	//		old_move = { location, angle };
+	//		v.erase(v.begin());
+	//	}
+	//	else {
+
+	//	}
+	//}
 }
 
 //加減速処理
@@ -220,4 +279,5 @@ void Player::Accleretion()
 		speed += 1.0f;
 	}
 }
-//a
+
+
