@@ -220,4 +220,3 @@ void Player::Accleretion()
 		speed += 1.0f;
 	}
 }
-//a
