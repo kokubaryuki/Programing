@@ -95,7 +95,7 @@ public:
 			}
 
 
-			Vector2D& operator+=(const Vector2D location)
+			Vector2D& operator += (const Vector2D location)
 			{
 
 				this->x += location.x;
@@ -103,7 +103,6 @@ public:
 
 				return*this;
 			}
-
 
 			Vector2D& operator-=(const Vector2D location)
 			{
@@ -160,9 +159,19 @@ public:
 				return*this;
 			}
 
-			bool operator!=(const Vector2D& location) 
+			bool operator == (const Vector2D& location)
+			{
+				return this->x == location.x && this->y == location.y;
+			}
+
+			bool operator != (const Vector2D& location) 
 			{
 				return (this->x != location.x && this->y != location.y);
+			}
+
+			bool operator != (const float val) {
+				return this->x != val || this->y != val;
+				
 			}
 
 			bool operator<=(const Vector2D& location)

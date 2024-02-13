@@ -32,6 +32,7 @@ void  InputControl::Update(int pad)
 	{
 		stick[pad][0].x = (float)input_state[pad].ThumbLX / (float)SHRT_MAX;
 	}
+
 	else
 	{
 		//stick[0].x = -((float)input_state.ThumbLX / (float)SHRT_MIN);
@@ -43,6 +44,7 @@ void  InputControl::Update(int pad)
 	{
 		stick[pad][0].y = -(float)input_state[pad].ThumbLY / (float)SHRT_MAX;
 	}
+
 	else
 	{
 		//stick[0].y = ((float)input_state.ThumbLY / (float)SHRT_MIN);

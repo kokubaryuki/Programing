@@ -7,13 +7,17 @@
 #include"math.h"
 #include "utility"//std::pair
 
-#define ACCELERATION 0.1f
-#define MAXSPEED	 9.0f
+#define ACCELERATION 0.1f		//加速度
+#define MAXSPEED	 5.0f		//最大スピード
+#define DRIFT_RATE	 0.075f		//ドリフト状態
+#define DRIVE_RATE	 0.010f		//ドライブ状態
+#define SMASH_POWER  300.0f		//スマッシュパワー
 
 enum class STATE {
 	IDLE = 0,		//アイドル
 	DRIVE,			//ドライブ
 	DRIFT,			//ドリフト
+	SMASH,			//スマッシュ攻撃
 	DAMAGED,		//ダメージを食らった
 	GARD,			//ガード状態
 	OUTOFCONTROLL	//確定死
@@ -42,12 +46,18 @@ private:
 	float acceleration = 0.0f;
 	float sqrt_val = 0.0f;
 	bool a = false;
-	//角度は補完してみる : [0] = Old,  [1] = Now,  [2] = New
+	//角度は補間してみる : [0] = Old,  [1] = Now,  [2] = New
 	std::pair<Vector2D, float> move_data[3] = { std::pair<Vector2D,float>(Vector2D(0.0f,0.0f),0.0f),
-									       std::pair<Vector2D,float>(Vector2D(0.0f,0.0f),0.0f),
-										   std::pair<Vector2D,float>(Vector2D(0.0f,0.0f),0.0f) };
+												std::pair<Vector2D,float>(Vector2D(0.0f,0.0f),0.0f),
+												std::pair<Vector2D,float>(Vector2D(0.0f,0.0f),0.0f) };
 	int count = 0;
 	int mypad;
+	float smash_rate = 0.1;
+	//補間する割合
+	float Interpolation_rate = DRIVE_RATE;
+
+	Vector2D smash_start_point;
+	Vector2D smash_target_point;
 	/******************/
 public:
 	Player(int pad);
@@ -69,12 +79,13 @@ public:
 	float GetHp()const;            //体力取得
 	int GetBarriarCount()const;    //バリアの枚数取得
 	bool IsBarrier()const;         //バリアは有効か？を取得
-	void Playerdie() const;        // プレイヤー死ぬ
+	//void Playerdie() const;        // プレイヤー死ぬ
 
 private:
 
 	void Movement();   //移動処理
-	void Accleretion();//加速処理
+	void Drift();	   //ドリフト処理
+	void Smash();	   //スマッシュ攻撃
 
 };
 	
