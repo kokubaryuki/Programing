@@ -118,8 +118,8 @@ public:
 			Vector2D& operator*=(const Vector2D scalar)
 			{
 
-				this->x += scalar.x;
-				this->x += scalar.y;
+				this->x *= scalar.x;
+				this->y *= scalar.y;
 
 				return*this;
 			}

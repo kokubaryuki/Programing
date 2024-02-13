@@ -27,25 +27,25 @@ void  InputControl::Update()
 
 
 	//左スティック入力値の更新（-1.0f～1.0fに範囲を制限する)
-	if (input_state.ThumbLX > 0.0f)
+	if (fabs((double)input_state.ThumbLX) > DEEDZOON)
 	{
 		stick[0].x = (float)input_state.ThumbLX / (float)SHRT_MAX;
 	}
-
 	else
 	{
-		stick[0].x = -((float)input_state.ThumbLX / (float)SHRT_MIN);
+		//stick[0].x = -((float)input_state.ThumbLX / (float)SHRT_MIN);
+		stick[0].x = 0.0f;
 	}
 
 
-	if (input_state.ThumbLY > 0.0f)
+	if (fabs((double)input_state.ThumbLY) > DEEDZOON)
 	{
-		stick[0].y = (float)input_state.ThumbLY / (float)SHRT_MAX;
+		stick[0].y = -(float)input_state.ThumbLY / (float)SHRT_MAX;
 	}
-
 	else
 	{
-		stick[0].y = -((float)input_state.ThumbLY / (float)SHRT_MIN);
+		//stick[0].y = ((float)input_state.ThumbLY / (float)SHRT_MIN);
+		stick[0].y = 0.0f;
 	}
 
 
