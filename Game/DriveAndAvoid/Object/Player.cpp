@@ -26,6 +26,8 @@ void Player::Initialize()
 	fuel = 20000;
 	barrier_count = 3;
 
+	barrier_Time = 0;
+
 	//画像の読込み
 	image = LoadGraph("Resource/images/car1pol.bmp");
 
@@ -70,15 +72,19 @@ void Player::Update()
 			barrier = new Barrier;
 		}
 	}
-
+	
 	//バリアが生成されていたら、更新を行う
 	if (barrier != nullptr)
 	{
+		barrier->Set_Angle(angle);
+		barrier_Time++;
 		//バリア時間が経過したか？していたら、削除する
 		if (barrier->IsFinished(this->speed))
 		{
 			delete barrier;
 			barrier = nullptr;
+
+			barrier_Time;
 		}
 	}
 
@@ -180,6 +186,7 @@ bool Player::IsBarrier() const
 	return (barrier != nullptr);
 }
 
+
 //移動処理
 void Player::Movement()
 {
@@ -228,7 +235,7 @@ void Player::Movement()
 
 	//ラジアンをfloatキャスト
 	angle = static_cast<float>(radt);
-
+	
 	//現在地+移動量
 	location += direction;
 	
@@ -278,6 +285,7 @@ void Player::Accleretion()
 	{
 		speed += 1.0f;
 	}
+
 }
 
 

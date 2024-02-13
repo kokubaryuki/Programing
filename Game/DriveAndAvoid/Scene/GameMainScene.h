@@ -34,6 +34,8 @@ private:
 	//“–‚½‚è”»’è
 	bool IsHitCheck(Player* p, Enemy* e);
 
+	
+
 };
 
 

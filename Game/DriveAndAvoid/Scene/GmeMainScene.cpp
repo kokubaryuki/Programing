@@ -2,6 +2,7 @@
 #include"../Object/RankingDate.h"
 #include"DxLib.h"
 #include<math.h>
+#include"../Object/Player.h"
 //
 GameMainScene::GameMainScene() :high_score(0), back_ground(NULL),
 barrier_image(NULL), mileage(0), player(nullptr), enemy(nullptr)
@@ -264,6 +265,12 @@ bool GameMainScene::IsHitCheck(Player* p, Enemy* e)
 		return false;
 	}
 
+	//ƒWƒƒƒXƒK
+	if (p -> GetbarrierTime() < 12)
+	{
+
+	}
+	
 	//“G‚Ìî•ñ‚ª–³‚¯‚ê‚ÎA“–‚½‚è”»’è‚ð–³Ž‹‚·‚é
 	if (e == nullptr)
 	{

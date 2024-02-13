@@ -23,6 +23,7 @@ private:
 	float fuel;       //燃料
 	int barrier_count;//バリアの枚数
 	Barrier* barrier; //バリア
+	int barrier_Time; //バリアの時間
 	
 	/******************/
 	double radt;
@@ -60,7 +61,8 @@ public:
 	float GetHp()const;            //体力取得
 	int GetBarriarCount()const;    //バリアの枚数取得
 	bool IsBarrier()const;         //バリアは有効か？を取得
-
+	int GetbarrierTime()const;     //バリアの時間取得
+	
 private:
 
 	void Movement();   //移動処理
