@@ -219,5 +219,19 @@ void Player::Accleretion()
 	{
 		speed += 1.0f;
 	}
+
+	/*右スティック押し込みで急加速(スマッシュ）
+	if (InputControl::GetButtonDown(XINPUT_BUTTON_RIGHT_THUMB))
+	{
+		speed += 10.0f;
+	}
+
+	右スティックを離したら減速
+	if (InputControl::GetButtonUp(XINPUT_BUTTON_RIGHT_THUMB))
+	{
+		speed -= 10.0f;
+	}
+	*/
+
 }
 //a
