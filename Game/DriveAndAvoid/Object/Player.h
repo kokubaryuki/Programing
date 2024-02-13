@@ -7,20 +7,22 @@
 #include"math.h"
 #include "utility"//std::pair
 
-#define ACCELERATION 0.08f
-#define MAXSPEED	 5.0f
+#define ACCELERATION 0.1f
+#define MAXSPEED	 9.0f
 
 enum class STATE {
-	IDLE,			//アイドル
+	IDLE = 0,		//アイドル
+	DRIVE,			//ドライブ
 	DRIFT,			//ドリフト
-	DAMAGED,		//
-	OUTOFCONTROLL
+	DAMAGED,		//ダメージを食らった
+	GARD,			//ガード状態
+	OUTOFCONTROLL	//確定死
 };
 
 class Player
 {
 private:
-
+	
 	bool is_active;   //有効状態か？
 	int image;        //画像データ
 	Vector2D location;//位置座標
@@ -33,18 +35,22 @@ private:
 	Barrier* barrier; //バリア
 	
 	/******************/
+	STATE player_state;
 	double radt;
 	Vector2D move_vector;
 	Vector2D move_direction;
 	float acceleration = 0.0f;
+	float sqrt_val = 0.0f;
+	bool a = false;
 	//角度は補完してみる : [0] = Old,  [1] = Now,  [2] = New
 	std::pair<Vector2D, float> move_data[3] = { std::pair<Vector2D,float>(Vector2D(0.0f,0.0f),0.0f),
 									       std::pair<Vector2D,float>(Vector2D(0.0f,0.0f),0.0f),
 										   std::pair<Vector2D,float>(Vector2D(0.0f,0.0f),0.0f) };
-	int pad;
+	int count = 0;
+	int mypad;
 	/******************/
 public:
-	Player(int input_type);
+	Player(int pad);
 	~Player();
 	
 	void Initialize(); //初期化処理

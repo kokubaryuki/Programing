@@ -67,8 +67,11 @@ void SceneManager::Update()
 			//フレーム開始時間を更新する
 			start_time = now_time;
 
-			//入力機能:更新処理
-			InputControl::Update();
+			for (int i = 0; i < 4; i++) {
+				//入力機能:更新処理
+				InputControl::Update(i);
+			}
+			
 
 			//更新処理（戻り値は次のシーン情報）
 			eSceneType next = current_scene->Update();
@@ -91,7 +94,7 @@ void SceneManager::Update()
 
 		//ESCAPEキーが押されていたら、ゲームを終了する
 		if (CheckHitKey(KEY_INPUT_ESCAPE) ||
-			InputControl::GetButtonUp(XINPUT_BUTTON_BACK))
+			InputControl::GetButtonUp(0,XINPUT_BUTTON_BACK))
 		{
 			break;
 		}

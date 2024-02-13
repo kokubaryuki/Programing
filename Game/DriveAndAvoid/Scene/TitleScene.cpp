@@ -43,7 +43,7 @@ void TitleScene::Initialize()
 eSceneType TitleScene::Update()
 {
 	//カーソル下移動
-	if (InputControl::GetButtonDown(XINPUT_BUTTON_DPAD_DOWN))
+	if (InputControl::GetButtonDown(0,XINPUT_BUTTON_DPAD_DOWN))
 	{
 		menu_cursor++;
 
@@ -55,7 +55,7 @@ eSceneType TitleScene::Update()
 	}
 	
 	//カーソル上移動
-	if (InputControl::GetButtonDown(XINPUT_BUTTON_DPAD_UP))
+	if (InputControl::GetButtonDown(0,XINPUT_BUTTON_DPAD_UP))
 	{
 		menu_cursor--;
 		//一番上に到達したら、一番下にする
@@ -67,7 +67,7 @@ eSceneType TitleScene::Update()
 
 
 	//カーソル決定（決定した画面に移動する)
-	if (InputControl::GetButtonDown(XINPUT_BUTTON_B))
+	if (InputControl::GetButtonDown(0,XINPUT_BUTTON_B))
 	{
 		switch (menu_cursor)
 		{

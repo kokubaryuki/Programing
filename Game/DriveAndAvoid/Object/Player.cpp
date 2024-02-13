@@ -3,15 +3,10 @@
 #include"math.h"
 #include "DxLib.h"
 
-Player::Player(int input_type) :is_active(false), image(NULL), location(0.0f), box_size(0.0f),
+Player::Player(int pad) :is_active(false), image(NULL), location(0.0f), box_size(0.0f),
 angle(0.0f), speed(0.0f), hp(0.0f), fuel(0.0f), barrier_count(0),barrier(nullptr)
 {
-	XINPUT_STATE input_state = {};
-	pad = input_type;
-	GetJoypadXInputState(pad, &input_state);
-	if (pad & XINPUT_BUTTON_DPAD_UP) {
-
-	}
+	mypad = pad;
 }
 
 Player::~Player()
@@ -59,31 +54,38 @@ void Player::Update()
 	//燃料の消費
 	fuel -= speed;
 
-	//移動処理
-	Movement();
+	if (player_state != STATE::OUTOFCONTROLL) {
+		//移動処理
+		Movement();
+	}
+	
 
 	//加減速処理
 	Accleretion();
 
 
 	//バリア処理
-	if (InputControl::GetButtonDown(XINPUT_BUTTON_B) && barrier_count > 0)
+	if (InputControl::GetButtonDown(mypad, XINPUT_BUTTON_B) && barrier_count > 0)
 	{
 		if (barrier == nullptr)
 		{
 			barrier_count--;
 			barrier = new Barrier;
+			player_state = STATE::GARD;
 		}
 	}
 
 	//バリアが生成されていたら、更新を行う
 	if (barrier != nullptr)
 	{
+		//
+		count++;
 		//バリア時間が経過したか？していたら、削除する
 		if (barrier->IsFinished(this->speed))
 		{
 			delete barrier;
 			barrier = nullptr;
+			count = 0;
 		}
 	}
 
@@ -100,9 +102,11 @@ void Player::Draw()
 	{
 		barrier->Draw(this->location);
 	}
-	DrawFormatString(0.0, 0.0, 0xffffff, "radt = %f", radt);
-	DrawFormatString(0.0, 12.0, 0xffffff, "x = %f y = %f", move_vector.x, move_vector.y);
-	DrawFormatString(0.0, 24.0, 0xffffff, "acce = %f", acceleration);
+	//DrawFormatString(0.0, 0.0, 0xffffff, "radt = %f", radt);
+	DrawFormatString(0.0, 12.0, 0xffffff, " move_data[1].x = %f  move_data[1].y = %f", move_data[1].first.x, move_data[1].first.y);
+	//DrawFormatString(0.0, 24.0, 0xffffff, "acce = %f", acceleration);
+	DrawFormatString(0, 36.0, 0xffffff, "move_direction.x = %f, y = %f", move_direction.x, move_direction.y);
+	DrawFormatString(0, 78.0, 0xffffff, "sqrt_val = %f", sqrt_val);
 }
 
 
@@ -181,51 +185,48 @@ void Player::Movement()
 	Vector2D move = Vector2D(0.0f);
 	////////////////////////////////////////////////////////
 
-	move_vector = InputControl::GetLeftStick();
-	move_data[2].first = InputControl::GetLeftStick();
+	//move_vector = InputControl::GetLeftStick();
+	move_data[1].first = InputControl::GetLeftStick(mypad);
+
+	if (move_data[1].first.x != 0.0f && move_data[1].first.y != 0.0f) {
+ 		move_data[0] = move_data[1];
+	}
 
 	//入力無しなら減速
-	if (move_vector.x == 0.0f && move_vector.y == 0.0f) 
+	if (move_data[1].first.x == 0.0f && move_data[1].first.y == 0.0f)
 	{
-		acceleration -= ACCELERATION;
-		if (acceleration < 0.0f) 
-		{
-			acceleration = 0.0f;
+		if (move_direction != Vector2D(0.0f, 0.0f)) {
+			//移動量が0.1より上なら
+			if (1.0f < std::sqrtf(std::powf(move_direction.x, 2.0f) + std::powf(move_direction.y, 2.0f))) {
+				//逆ベクトルをとる
+				Vector2D Deceleration = move_data[0].first * -1;
+				//移動量に加算する
+				move_direction += Deceleration * ACCELERATION;
+			}
+			else {
+				move_direction = Vector2D(0.0f, 0.0f);
+			}
 		}
+		
 
 	}
 	//入力有りなら加速
 	else 
 	{
-		acceleration += ACCELERATION;
-		if (acceleration >= 8.0f) 
-		{
-			acceleration = 8.0f;
-		}
 
 		//float lerp_x = std::lerp(move_data[2].first, move_data)
 
 		//入力中のみ車体の向きを反映させる。(※atan2はラジアン、180/πを掛けると度数法に変換できる
-		radt = atan2(move_vector.y, move_vector.x);/*  (180/ DX_PI_F)*/;
-		
+		radt = atan2(move_data[1].first.y, move_data[1].first.x);/*  (180/ DX_PI_F)*/;
+		//方向に加速度をかける
+		move_direction += move_data[1].first * ACCELERATION;
 	}
-	//方向に加速度をかける
-	move_direction += move_vector * acceleration;
-	if (5.0f <= std::sqrt(std::powf(move_direction.x, 2.0f) + std::powf(move_direction.y, 2.0f))) {
-		move_direction += move_vector * MAXSPEED;
-	}
-	//方向に加速度をかける
-	//move_vector *= acceleration;
-
-
-
+	sqrt_val = std::sqrtf(std::powf(move_direction.x, 2.0f) + std::powf(move_direction.y, 2.0f));
 	//ラジアンをfloatキャスト
 	angle = static_cast<float>(radt);
 
 	//現在地+移動量
 	location += move_direction;
-	
-	//move_data[1].first = move_data[2].first;
 
 	/////////////////////////////////////////////////////
 
@@ -242,13 +243,13 @@ void Player::Movement()
 void Player::Accleretion()
 {
 	//LBボタンが押されたら、減速する
-	if (InputControl::GetButtonDown(XINPUT_BUTTON_LEFT_SHOULDER) && speed > 1.0f)
+	if (InputControl::GetButtonDown(mypad,XINPUT_BUTTON_LEFT_SHOULDER) && speed > 1.0f)
 	{
 		speed -= 1.0f;
 	}
 
 	//RBボタンが押されたら、加速する
-	if (InputControl::GetButtonDown(XINPUT_BUTTON_RIGHT_SHOULDER) && speed < 10.0f)
+	if (InputControl::GetButtonDown(mypad,XINPUT_BUTTON_RIGHT_SHOULDER) && speed < 10.0f)
 	{
 		speed += 1.0f;
 	}

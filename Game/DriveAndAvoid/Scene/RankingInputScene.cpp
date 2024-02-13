@@ -144,7 +144,7 @@ eSceneType RankingInputScene::GetNowScene() const
 bool RankingInputScene::InputName()
 {
 	//カーソル操作処理
-	if (InputControl::GetButtonDown(XINPUT_BUTTON_DPAD_LEFT))
+	if (InputControl::GetButtonDown(1,XINPUT_BUTTON_DPAD_LEFT))
 	{
 		if (cursor_x > 0)
 		{
@@ -156,7 +156,7 @@ bool RankingInputScene::InputName()
 		}
 	}
 
-	if (InputControl::GetButtonDown(XINPUT_BUTTON_DPAD_RIGHT))
+	if (InputControl::GetButtonDown(1,XINPUT_BUTTON_DPAD_RIGHT))
 	{
 		if (cursor_x < 12)
 		{
@@ -168,7 +168,7 @@ bool RankingInputScene::InputName()
 		}
 	}
 
-	if (InputControl::GetButtonDown(XINPUT_BUTTON_DPAD_UP))
+	if (InputControl::GetButtonDown(1,XINPUT_BUTTON_DPAD_UP))
 	{
 		if (cursor_y > 0)
 		{
@@ -177,7 +177,7 @@ bool RankingInputScene::InputName()
 	}
 
 
-	if (InputControl::GetButtonDown(XINPUT_BUTTON_DPAD_DOWN))
+	if (InputControl::GetButtonDown(1,XINPUT_BUTTON_DPAD_DOWN))
 	{
 		if (cursor_y < 4)
 		{
@@ -190,7 +190,7 @@ bool RankingInputScene::InputName()
 	}
 
 	//カーソル位置の文字を決定する
-	if (InputControl::GetButtonDown(XINPUT_BUTTON_B))
+	if (InputControl::GetButtonDown(1,XINPUT_BUTTON_B))
 	{
 		if (cursor_y < 2)
 		{
