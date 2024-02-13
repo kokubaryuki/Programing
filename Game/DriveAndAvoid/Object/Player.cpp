@@ -7,6 +7,7 @@ Player::Player(int pad) :is_active(false), image(NULL), location(0.0f), box_size
 angle(0.0f), speed(0.0f), hp(0.0f), fuel(0.0f), barrier_count(0),barrier(nullptr)
 {
 	mypad = pad;
+
 }
 
 Player::~Player()
@@ -33,6 +34,9 @@ void Player::Initialize()
 	if (image == -1)
 	{
 		throw("Resource/images/car1pol.bmpがありません\n");
+	}
+	for (int i = 0; i < 20; i++) {
+		effect[i] = nullptr;
 	}
 }
 
@@ -63,6 +67,8 @@ void Player::Update()
 	if (player_state != STATE::SMASH) {
 		Drift();
 	}
+	
+
 
 	//移動処理はスマッシュ攻撃と吹っ飛ばされ状態以外なら
 	if (player_state != STATE::SMASH && player_state != STATE::OUTOFCONTROLL) 
@@ -84,7 +90,6 @@ void Player::Update()
 	//バリアが生成されていたら、更新を行う
 	if (barrier != nullptr)
 	{
-		//
 		count++;
 		//バリア時間が経過したか？していたら、削除する
 		if (barrier->IsFinished(this->speed))
@@ -95,12 +100,55 @@ void Player::Update()
 		}
 	}
 
+
+	//残像を表示(エフェクト描画)
+	if (player_state == STATE::DRIFT || player_state == STATE::SMASH)
+	{
+		if (drawing_count % DRAWING_INTERVAL == 0)
+		{
+			if (effect[drawing_num] == nullptr) {
+				effect[drawing_num] = new Effect(location.x, location.y, 1.0f, angle, image);
+				drawing_num++;
+				if (19 < drawing_num) {
+					drawing_num = 0;
+				}
+			}
+		}
+		drawing_count++;
+	}
+	//ドリフト状態じゃなければ
+	else
+	{
+		//生成中の残像を削除
+		if (drawing_count != 0)
+		{
+			drawing_count = 0;
+		}
+	}
+	//エフェクトが生成されていたら、更新を行う
+	for (int i = 0; i < 20; i++)
+	{
+		if (effect[i] != nullptr)
+		{
+			effect[i]->Update();
+			if (effect[i]->IsFinished()) {
+				delete effect[i]; // Effect インスタンスを削除する
+				effect[i] = nullptr;
+			}
+		}
+	}
+
 }
 
 //描画処理
 void Player::Draw()
-{	
-	
+{
+	for (int i = 0; i < 20; i++) {
+		if (effect[i] != nullptr) {
+			effect[i]->Draw();
+		}
+	}
+
 	DrawRotaGraphF(location.x, location.y, 1.0, angle, image, TRUE);
 
 	//バリアが生成されていたら、描画を行う

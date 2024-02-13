@@ -5,13 +5,16 @@
 #include"iostream"
 #include"cmath"
 #include"math.h"
+#include"vector"
+#include"Effect.h"
 #include "utility"//std::pair
 
-#define ACCELERATION 0.1f		//加速度
-#define MAXSPEED	 5.0f		//最大スピード
-#define DRIFT_RATE	 0.075f		//ドリフト状態
-#define DRIVE_RATE	 0.010f		//ドライブ状態
-#define SMASH_POWER  300.0f		//スマッシュパワー
+#define ACCELERATION		0.1f		//加速度
+#define MAXSPEED			5.0f		//最大スピード
+#define DRIFT_RATE			0.075f		//ドリフト状態
+#define DRIVE_RATE			0.010f		//ドライブ状態
+#define SMASH_POWER			300.0f		//スマッシュパワー
+#define DRAWING_INTERVAL	2			//エフェクト描画間隔
 
 enum class STATE {
 	IDLE = 0,		//アイドル
@@ -39,6 +42,7 @@ private:
 	Barrier* barrier; //バリア
 	
 	/******************/
+	
 	STATE player_state;
 	double radt;
 	Vector2D move_vector;
@@ -55,9 +59,12 @@ private:
 	float smash_rate = 0.1;
 	//補間する割合
 	float Interpolation_rate = DRIVE_RATE;
-
 	Vector2D smash_start_point;
 	Vector2D smash_target_point;
+
+	Effect* effect[20];
+	int drawing_count = 0;
+	int drawing_num = 0;
 	/******************/
 public:
 	Player(int pad);
