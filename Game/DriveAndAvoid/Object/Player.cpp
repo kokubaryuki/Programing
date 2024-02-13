@@ -86,17 +86,7 @@ void Player::Update()
 
 //描画処理
 void Player::Draw()
-{
-	//空でなければ配列の先頭を描画
-	//if (!v.empty()) {
-	//	DrawRotaGraphF(v[0].first.x, v[0].first.y, 1.0, v[0].second, image, TRUE);
-	//	//先頭要素を削除
-	//	v.erase(v.begin());
-	//}
-	//else {
-	//	
-	//}
-	
+{	
 
 	DrawRotaGraphF(location.x, location.y, 1.0, angle, image, TRUE);
 
@@ -185,8 +175,10 @@ void Player::Movement()
 {
 	Vector2D move = Vector2D(0.0f);
 	////////////////////////////////////////////////////////
+
 	direction = InputControl::GetLeftStick();
-	
+	move_data[2].first = InputControl::GetLeftStick();
+
 	//入力無しなら減速
 	if (direction.x == 0.0f && direction.y == 0.0f) 
 	{
@@ -201,27 +193,16 @@ void Player::Movement()
 	else 
 	{
 		acceleration += ACCELERATION;
-		if (acceleration >= 12.0f) 
+		if (acceleration >= 8.0f) 
 		{
-			acceleration = 12.0f;
+			acceleration = 8.0f;
 		}
+
+		//float lerp_x = std::lerp(move_data[2].first, move_data)
+
 		//入力中のみ車体の向きを反映させる。(※atan2はラジアン、180/πを掛けると度数法に変換できる
 		radt = atan2(direction.y, direction.x);/*  (180/ DX_PI_F)*/;
 		
-		//if (v.empty()) {
-		//	//１つ目の要素ならdelay開始
-		//	start_delay = true;
-
-		//	v.push_back(old_move);
-		//}
-		//else {
-		//	
-		//}
-		//location += direction;
-
-		//数フレーム遅れさせる処理
-		/*std::pair<Vector2D, float>move_data = { location,angle };
-		v.push_back(move_data);*/
 	}
 	//方向に加速度をかける
 	direction *= acceleration;
@@ -232,36 +213,17 @@ void Player::Movement()
 	//現在地+移動量
 	location += direction;
 	
+	move_data[1].first = move_data[2].first;
+
 	/////////////////////////////////////////////////////
 
 	//画像外に行かないように制限する
-	if ((location.x < box_size.x) || (location.x >= 640.0f - 180.0f) ||
+	/*if ((location.x < box_size.x) || (location.x >= 640.0f - 180.0f) ||
 		(location.y < box_size.y) || (location.y >= 480.0f - box_size.y))
 	{
 		location -= move;
-	}
+	}*/
 
-}
-
-//配列に要素が入り始めたらdelayスタート
-void Player::DelayDrive(std::vector<std::pair<Vector2D, float>> vec)
-{
-	//if (start_delay == true) {
-	//	delay_count++;
-
-	//}
-	//else 
-	//{
-	//	if (!vec.empty()) {
-	//		location = v.begin()->first;
-	//		angle = v.begin()->second;
-	//		old_move = { location, angle };
-	//		v.erase(v.begin());
-	//	}
-	//	else {
-
-	//	}
-	//}
 }
 
 //加減速処理

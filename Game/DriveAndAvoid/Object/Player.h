@@ -3,10 +3,10 @@
 #include"../Utility/Vector2D.h"
 #include"Barrier.h"
 #include"iostream"
-#include"vector"
+#include"cmath"
 #include "utility"//std::pair
 
-#define ACCELERATION 0.3f
+#define ACCELERATION 0.08f
 #define DELAY_FLAME	 30
 
 class Player
@@ -28,17 +28,10 @@ private:
 	double radt;
 	Vector2D direction;
 	float acceleration = 0.0f;
-	
-	//??フレーム遅れて動く
-	std::vector<std::pair<Vector2D, float>> v;
-	std::pair<Vector2D, float> old_move = { Vector2D(0.0f,0.0f),0.0f };
-	
-	//ディレイカウント
-	int delay_count = 0;
-	//カウント後描画開始
-	bool start_delay = false;
-
-	
+	//角度は補完してみる : [0] = Old,  [1] = Now,  [2] = New
+	std::pair<Vector2D, float> move_data[3] = { std::pair<Vector2D,float>(Vector2D(0.0f,0.0f),0.0f),
+									       std::pair<Vector2D,float>(Vector2D(0.0f,0.0f),0.0f),
+										   std::pair<Vector2D,float>(Vector2D(0.0f,0.0f),0.0f) };
 	/******************/
 public:
 	Player();
@@ -64,7 +57,6 @@ public:
 private:
 
 	void Movement();   //移動処理
-	void DelayDrive(std::vector<std::pair<Vector2D, float>> vec); //
 	void Accleretion();//加速処理
 
 };
