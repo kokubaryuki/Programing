@@ -4,6 +4,7 @@
 bool InputControl::now_button[16] = {};
 bool InputControl::old_button[16] = {};
 float InputControl::trigger[2] = {};
+float InputControl::shoulder[2]{};
 Vector2D InputControl::stick[2] = {};
 
 //入力機能:更新処理
@@ -108,6 +109,18 @@ float InputControl::GetRightTrigger()
 	return trigger[1];
 }
 
+
+//LBボタン取得
+float  InputControl::GetLeftShoulder()
+{
+	return shoulder[0];
+}
+
+//RBボタン取得
+float  InputControl::GetRightShoulder()
+{
+	return shoulder[1];
+}
 
 //左スティック
 Vector2D InputControl::GetLeftStick()

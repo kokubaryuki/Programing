@@ -63,11 +63,19 @@ void Player::Update()
 	Movement();
 
 	//加減速処理
-	Accleretion();
+	//Accleretion();
 
 
-	//バリア処理
-	if (InputControl::GetButtonDown(XINPUT_BUTTON_B) && barrier_count > 0)
+	//バリア処理（RBボタン）
+	/*if (InputControl::GetButtonDown(XINPUT_BUTTON_RIGHT_SHOULDER) && barrier_count > 0)
+	{
+		if (barrier == nullptr)
+		{
+			barrier_count--;
+			barrier = new Barrier;
+		}
+	}*/
+	if (InputControl::GetLeftShoulder() && barrier_count > 0)
 	{
 		if (barrier == nullptr)
 		{
@@ -75,7 +83,7 @@ void Player::Update()
 			barrier = new Barrier;
 		}
 	}
-
+	;
 	//バリアが生成されていたら、更新を行う
 	if (barrier != nullptr)
 	{
