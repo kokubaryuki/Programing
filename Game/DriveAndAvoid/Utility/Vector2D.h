@@ -54,7 +54,7 @@ public:
 
 
 		//Š|‚¯ŽZ
-		const Vector2D operator*(const float& scalar)
+		const Vector2D operator * (const float& scalar)
 		{
 			float x = this->x * scalar;
 			float y = this->y * scalar;
@@ -62,7 +62,7 @@ public:
 			return Vector2D(x, y);
 		}
 
-		const Vector2D operator*(const Vector2D location)
+		const Vector2D operator * (const Vector2D& location)
 		{
 			float x = this->x * location.x;
 			float y = this->y * location.y;
@@ -95,7 +95,7 @@ public:
 			}
 
 
-			Vector2D& operator+=(const Vector2D location)
+			Vector2D& operator += (const Vector2D location)
 			{
 
 				this->x += location.x;
@@ -103,7 +103,6 @@ public:
 
 				return*this;
 			}
-
 
 			Vector2D& operator-=(const Vector2D location)
 			{
@@ -160,5 +159,24 @@ public:
 				return*this;
 			}
 
+			bool operator == (const Vector2D& location)
+			{
+				return this->x == location.x && this->y == location.y;
+			}
+
+			bool operator != (const Vector2D& location) 
+			{
+				return (this->x != location.x && this->y != location.y);
+			}
+
+			bool operator != (const float val) {
+				return this->x != val || this->y != val;
+				
+			}
+
+			bool operator<=(const Vector2D& location)
+			{
+				return (this->x <= location.x && this->y <= location.y);
+			}
 };
 

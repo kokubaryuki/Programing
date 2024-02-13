@@ -35,7 +35,7 @@ void RankingDispScene::Initialize()
 eSceneType RankingDispScene::Update()
 {
 	//Bボタンが押されたら、タイトルに戻る
-	if (InputControl::GetButtonDown(XINPUT_BUTTON_B))
+	if (InputControl::GetButtonDown(1,XINPUT_BUTTON_B))
 	{
 		return eSceneType::E_TITLE;
 	}

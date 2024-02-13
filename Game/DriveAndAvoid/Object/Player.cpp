@@ -1,11 +1,12 @@
 #include"Player.h"
 #include"../Utility/InputControl.h"
-#include"math.h"
+#include"cmath"
 #include "DxLib.h"
 
-Player::Player() :is_active(false), image(NULL), location(0.0f), box_size(0.0f),
+Player::Player(int pad) :is_active(false), image(NULL), location(0.0f), box_size(0.0f),
 angle(0.0f), speed(0.0f), hp(0.0f), fuel(0.0f), barrier_count(0),barrier(nullptr)
 {
+	mypad = pad;
 
 }
 
@@ -34,13 +35,16 @@ void Player::Initialize()
 	{
 		throw("Resource/images/car1pol.bmpがありません\n");
 	}
+	for (int i = 0; i < 20; i++) {
+		effect[i] = nullptr;
+	}
 }
 
 //更新処理
 void Player::Update()
 {
 	//操作不可能状態であれば、自身を回転させる
-	if (!is_active)
+	/*if (!is_active)
 	{
 		angle += DX_PI_F / 24.0f;
 		speed = 1.0f;
@@ -49,36 +53,88 @@ void Player::Update()
 			is_active = true;
 		}
 		return;
-	}
+	}*/
 
 	//燃料の消費
-	fuel -= speed;
+	//fuel -= speed;
 
-	//移動処理
-	Movement();
+	//吹っ飛ばされ状態じゃなければ、スマッシュ可能
+	if (player_state != STATE::OUTOFCONTROLL) {
+		Smash();
+	}
 
-	//加減速処理
-	Accleretion();
+	//スマッシュ攻撃状態じゃなければ、ドリフト可能
+	if (player_state != STATE::SMASH) {
+		Drift();
+	}
+	
 
 
+	//移動処理はスマッシュ攻撃と吹っ飛ばされ状態以外なら
+	if (player_state != STATE::SMASH && player_state != STATE::OUTOFCONTROLL) 
+	{
+		Movement();
+	}
+	
 	//バリア処理
-	if (InputControl::GetButtonDown(XINPUT_BUTTON_B) && barrier_count > 0)
+	if (InputControl::GetButtonDown(mypad, XINPUT_BUTTON_B) && barrier_count > 0)
 	{
 		if (barrier == nullptr)
 		{
 			barrier_count--;
 			barrier = new Barrier;
+			player_state = STATE::GARD;
 		}
 	}
 
 	//バリアが生成されていたら、更新を行う
 	if (barrier != nullptr)
 	{
+		count++;
 		//バリア時間が経過したか？していたら、削除する
 		if (barrier->IsFinished(this->speed))
 		{
 			delete barrier;
 			barrier = nullptr;
+			count = 0;
+		}
+	}
+
+
+	//残像を表示(エフェクト描画)
+	if (player_state == STATE::DRIFT || player_state == STATE::SMASH)
+	{
+		if (drawing_count % DRAWING_INTERVAL == 0)
+		{
+			if (effect[drawing_num] == nullptr) {
+				effect[drawing_num] = new Effect(location.x, location.y, 1.0f, angle, image);
+				drawing_num++;
+				if (19 < drawing_num) {
+					drawing_num = 0;
+				}
+			}
+		}
+		drawing_count++;
+	}
+	//ドリフト状態じゃなければ
+	else
+	{
+		//生成中の残像を削除
+		if (drawing_count != 0)
+		{
+			drawing_count = 0;
+		}
+	}
+	//エフェクトが生成されていたら、更新を行う
+	for (int i = 0; i < 20; i++)
+	{
+		if (effect[i] != nullptr)
+		{
+			effect[i]->Update();
+			if (effect[i]->IsFinished()) {
+				delete effect[i]; // Effect インスタンスを削除する
+				effect[i] = nullptr;
+			}
 		}
 	}
 
@@ -86,7 +142,12 @@ void Player::Update()
 
 //描画処理
 void Player::Draw()
-{	
+{
+	for (int i = 0; i < 20; i++) {
+		if (effect[i] != nullptr) {
+			effect[i]->Draw();
+		}
+	}
 
 	DrawRotaGraphF(location.x, location.y, 1.0, angle, image, TRUE);
 
@@ -95,9 +156,17 @@ void Player::Draw()
 	{
 		barrier->Draw(this->location);
 	}
-	DrawFormatString(0.0, 0.0, 0xffffff, "radt = %f", radt);
-	DrawFormatString(0.0, 12.0, 0xffffff, "x = %f y = %f", direction.x, direction.y);
-	DrawFormatString(0.0, 24.0, 0xffffff, "acce = %f", acceleration);
+	DrawFormatString(700, 12, 0xffffff, " move_data[1].x = %f", move_data[1].first.x);
+	DrawFormatString(700, 36, 0xffffff, " move_data[1].y = %f", move_data[1].first.y);
+	//DrawFormatString(700, 36, 0xffffff, "move_direction.x = %f, y = %f", move_direction.x, move_direction.y);
+	//DrawFormatString(700, 78, 0xffffff, "sqrt_val = %f", sqrt_val);
+	if (Interpolation_rate == DRIFT_RATE) {
+		DrawFormatString(700, 90, 0xffffff, "DRIFT!!!!");
+	}
+	else 
+	{
+		DrawFormatString(700, 90, 0xffffff, "DRIVE");
+	}
 }
 
 
@@ -173,72 +242,109 @@ bool Player::IsBarrier() const
 //移動処理
 void Player::Movement()
 {
-	Vector2D move = Vector2D(0.0f);
-	////////////////////////////////////////////////////////
-
-	direction = InputControl::GetLeftStick();
-	move_data[2].first = InputControl::GetLeftStick();
+	move_data[2].first = InputControl::GetLeftStick(mypad);
 
 	//入力無しなら減速
-	if (direction.x == 0.0f && direction.y == 0.0f) 
+	if (move_data[2].first.x == 0.0f && move_data[2].first.y == 0.0f)
 	{
-		acceleration -= ACCELERATION;
-		if (acceleration < 0.0f) 
+		//移動ベクトルの長さ(速さ)を測る
+		float length = std::sqrtf(std::powf(move_direction.x, 2.0f) + std::powf(move_direction.y, 2.0f));
+		if (length != 0.0f)
 		{
-			acceleration = 0.0f;
+			//長さ(速さ)が0.1より上なら
+			if (ACCELERATION < length)
+			{
+				//現在の移動ベクトルを正規化
+				Vector2D NormalVector = Vector2D(move_direction.x / length, move_direction.y / length);
+				//逆ベクトルをとる
+				Vector2D Deceleration = NormalVector * -1;
+				//移動量に加算する
+				move_direction += Deceleration * ACCELERATION;
+			}
+			else 
+			{
+				move_direction = Vector2D(0.0f, 0.0f);
+				//完全に止まったらアイドル
+				player_state = STATE::IDLE;
+			}
 		}
-
 	}
 	//入力有りなら加速
 	else 
 	{
-		acceleration += ACCELERATION;
-		if (acceleration >= 8.0f) 
-		{
-			acceleration = 8.0f;
-		}
-
-		//float lerp_x = std::lerp(move_data[2].first, move_data)
+		//現在のベクトルと新しいベクトルのx成分とy成分を線形補間して少しずつベクトルを変える
+		float lerp_x = std::lerp(move_data[1].first.x, move_data[2].first.x, Interpolation_rate);
+		float lerp_y = std::lerp(move_data[1].first.y, move_data[2].first.y, Interpolation_rate);
+		move_data[1].first = Vector2D(lerp_x, lerp_y);
 
 		//入力中のみ車体の向きを反映させる。(※atan2はラジアン、180/πを掛けると度数法に変換できる
-		radt = atan2(direction.y, direction.x);/*  (180/ DX_PI_F)*/;
-		
+		move_data[1].second = atan2(move_data[1].first.y, move_data[1].first.x);/*  (180/ DX_PI_F)*/;
+
+		//方向に加速度をかける
+		move_direction += move_data[1].first * ACCELERATION;
+		sqrt_val = std::sqrtf(std::powf(move_direction.x, 2.0f) + std::powf(move_direction.y, 2.0f));
+		if (MAXSPEED < sqrt_val) 
+		{
+			move_direction = move_data[1].first * MAXSPEED;
+		}
 	}
-	//方向に加速度をかける
-	direction *= acceleration;
 
-	//ラジアンをfloatキャスト
-	angle = static_cast<float>(radt);
-
+	sqrt_val = std::sqrtf(std::powf(move_direction.x, 2.0f) + std::powf(move_direction.y, 2.0f));
+	angle = move_data[1].second;
 	//現在地+移動量
-	location += direction;
-	
-	move_data[1].first = move_data[2].first;
-
-	/////////////////////////////////////////////////////
-
-	//画像外に行かないように制限する
-	/*if ((location.x < box_size.x) || (location.x >= 640.0f - 180.0f) ||
-		(location.y < box_size.y) || (location.y >= 480.0f - box_size.y))
-	{
-		location -= move;
-	}*/
-
+	location += move_direction;
 }
 
 //加減速処理
-void Player::Accleretion()
+void Player::Drift()
 {
-	//LBボタンが押されたら、減速する
-	if (InputControl::GetButtonDown(XINPUT_BUTTON_LEFT_SHOULDER) && speed > 1.0f)
+	//RBボタンが押されたら、加速する
+	if (InputControl::GetButton(mypad,XINPUT_BUTTON_RIGHT_SHOULDER))
 	{
-		speed -= 1.0f;
+		Interpolation_rate = DRIFT_RATE;
+		player_state = STATE::DRIFT;
+	}
+	else 
+	{
+		Interpolation_rate = DRIVE_RATE;
+		player_state = STATE::DRIVE;
+	}
+}
+
+void Player::Smash()
+{
+	//Aボタンでスマッシュ攻撃＆スマッシュ攻撃状態に遷移
+	if (InputControl::GetButtonDown(mypad, XINPUT_BUTTON_A)) 
+	{
+		player_state = STATE::SMASH;
+		//補間レートを初期化
+		smash_rate = 0.0f;
+		//
+		smash_start_point = location;
+		Vector2D fowerd_vector = Vector2D(std::cosf(move_data[1].second), std::sinf(move_data[1].second));
+		//スタート位置から車体の前ベクトル向けに×100したポイントを取得
+		smash_target_point = smash_start_point + fowerd_vector * SMASH_POWER;
 	}
 
-	//RBボタンが押されたら、加速する
-	if (InputControl::GetButtonDown(XINPUT_BUTTON_RIGHT_SHOULDER) && speed < 10.0f)
-	{
-		speed += 1.0f;
+	if (player_state == STATE::SMASH) {
+		//補間レートを10%ずつ増やす
+		smash_rate += 0.1f;
+
+		//スタート位置からターゲット位置までの線形補間した値を取得＆locationにセット
+		float lerp_posx = std::lerp(smash_start_point.x, smash_target_point.x, smash_rate);
+		float lerp_posy = std::lerp(smash_start_point.y, smash_target_point.y, smash_rate);
+		location = Vector2D(lerp_posx, lerp_posy);
+
+		//ターゲットポイントまで100%到達したら
+		if (1.0f <= smash_rate) {
+			smash_rate = 0.0f;
+			if (InputControl::GetButton(mypad, XINPUT_BUTTON_RIGHT_SHOULDER)) {
+				player_state = STATE::DRIFT;
+			}
+			else {
+				player_state = STATE::DRIVE;
+			}			
+		}
 	}
 }
 
