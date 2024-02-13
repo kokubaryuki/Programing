@@ -62,7 +62,7 @@ void Player::Update()
 	//XINPUT_BUTTON_LEFT_SHOULDER
 
 	//ƒoƒŠƒAˆ—
-	if (InputControl::GetButtonDown(XINPUT_BUTTON_A) && barrier_count > 0)
+	if (InputControl::GetButtonDown( XINPUT_BUTTON_LEFT_SHOULDER) && barrier_count > 0)
 	{
 		if (barrier == nullptr)
 		{
