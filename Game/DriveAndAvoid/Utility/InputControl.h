@@ -16,7 +16,7 @@ private:
 	static Vector2D stick[2];//左右スティック入力値
 
 public:
-	static void Update(); //更新処理
+	static void Update(int input_type); //更新処理
 
 	//ボタン入力取得処理
 	static bool GetButton(int button);    //押し続けている間

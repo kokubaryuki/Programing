@@ -3,10 +3,15 @@
 #include"math.h"
 #include "DxLib.h"
 
-Player::Player() :is_active(false), image(NULL), location(0.0f), box_size(0.0f),
+Player::Player(int input_type) :is_active(false), image(NULL), location(0.0f), box_size(0.0f),
 angle(0.0f), speed(0.0f), hp(0.0f), fuel(0.0f), barrier_count(0),barrier(nullptr)
 {
+	XINPUT_STATE input_state = {};
+	pad = input_type;
+	GetJoypadXInputState(pad, &input_state);
+	if (pad & XINPUT_BUTTON_DPAD_UP) {
 
+	}
 }
 
 Player::~Player()
@@ -96,7 +101,7 @@ void Player::Draw()
 		barrier->Draw(this->location);
 	}
 	DrawFormatString(0.0, 0.0, 0xffffff, "radt = %f", radt);
-	DrawFormatString(0.0, 12.0, 0xffffff, "x = %f y = %f", direction.x, direction.y);
+	DrawFormatString(0.0, 12.0, 0xffffff, "x = %f y = %f", move_vector.x, move_vector.y);
 	DrawFormatString(0.0, 24.0, 0xffffff, "acce = %f", acceleration);
 }
 
@@ -176,11 +181,11 @@ void Player::Movement()
 	Vector2D move = Vector2D(0.0f);
 	////////////////////////////////////////////////////////
 
-	direction = InputControl::GetLeftStick();
+	move_vector = InputControl::GetLeftStick();
 	move_data[2].first = InputControl::GetLeftStick();
 
 	//入力無しなら減速
-	if (direction.x == 0.0f && direction.y == 0.0f) 
+	if (move_vector.x == 0.0f && move_vector.y == 0.0f) 
 	{
 		acceleration -= ACCELERATION;
 		if (acceleration < 0.0f) 
@@ -201,19 +206,26 @@ void Player::Movement()
 		//float lerp_x = std::lerp(move_data[2].first, move_data)
 
 		//入力中のみ車体の向きを反映させる。(※atan2はラジアン、180/πを掛けると度数法に変換できる
-		radt = atan2(direction.y, direction.x);/*  (180/ DX_PI_F)*/;
+		radt = atan2(move_vector.y, move_vector.x);/*  (180/ DX_PI_F)*/;
 		
 	}
 	//方向に加速度をかける
-	direction *= acceleration;
+	move_direction += move_vector * acceleration;
+	if (5.0f <= std::sqrt(std::powf(move_direction.x, 2.0f) + std::powf(move_direction.y, 2.0f))) {
+		move_direction += move_vector * MAXSPEED;
+	}
+	//方向に加速度をかける
+	//move_vector *= acceleration;
+
+
 
 	//ラジアンをfloatキャスト
 	angle = static_cast<float>(radt);
 
 	//現在地+移動量
-	location += direction;
+	location += move_direction;
 	
-	move_data[1].first = move_data[2].first;
+	//move_data[1].first = move_data[2].first;
 
 	/////////////////////////////////////////////////////
 

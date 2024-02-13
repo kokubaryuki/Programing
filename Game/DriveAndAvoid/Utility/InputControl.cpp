@@ -7,12 +7,12 @@ float InputControl::trigger[2] = {};
 Vector2D InputControl::stick[2] = {};
 
 //入力機能:更新処理
-void  InputControl::Update()
+void  InputControl::Update(int input_type)
 {
 
 	//XInputコントローラーの入力値を取得する
-	XINPUT_STATE input_state = {};
-	GetJoypadXInputState(DX_INPUT_PAD1, &input_state);
+	XINPUT_STATE input_state[4] = {};
+	GetJoypadXInputState(input_type, &input_state[input_type - 1]);
 
 	//ボタン入力値の更新
 	for (int i = 0; i < 16; i++)
@@ -75,7 +75,7 @@ void  InputControl::Update()
 //
 
 //ボタン取得:押してる間
-bool InputControl::GetButton(int button)
+bool InputControl::GetButton(int input_type,int button)
 {
 	return CheckButtonRange(button) && (now_button[button] &&
 		old_button[button]);

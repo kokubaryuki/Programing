@@ -4,10 +4,18 @@
 #include"Barrier.h"
 #include"iostream"
 #include"cmath"
+#include"math.h"
 #include "utility"//std::pair
 
 #define ACCELERATION 0.08f
-#define DELAY_FLAME	 30
+#define MAXSPEED	 5.0f
+
+enum class STATE {
+	IDLE,			//アイドル
+	DRIFT,			//ドリフト
+	DAMAGED,		//
+	OUTOFCONTROLL
+};
 
 class Player
 {
@@ -26,15 +34,17 @@ private:
 	
 	/******************/
 	double radt;
-	Vector2D direction;
+	Vector2D move_vector;
+	Vector2D move_direction;
 	float acceleration = 0.0f;
 	//角度は補完してみる : [0] = Old,  [1] = Now,  [2] = New
 	std::pair<Vector2D, float> move_data[3] = { std::pair<Vector2D,float>(Vector2D(0.0f,0.0f),0.0f),
 									       std::pair<Vector2D,float>(Vector2D(0.0f,0.0f),0.0f),
 										   std::pair<Vector2D,float>(Vector2D(0.0f,0.0f),0.0f) };
+	int pad;
 	/******************/
 public:
-	Player();
+	Player(int input_type);
 	~Player();
 	
 	void Initialize(); //初期化処理

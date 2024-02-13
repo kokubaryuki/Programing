@@ -4,7 +4,7 @@
 #include<math.h>
 
 GameMainScene::GameMainScene() :high_score(0), back_ground(NULL),
-barrier_image(NULL), mileage(0), player(nullptr), enemy(nullptr)
+barrier_image(NULL), mileage(0), /*player(nullptr),*/ enemy(nullptr)
 {
 	for (int i = 0; i < 3; i++)
 	{
@@ -47,11 +47,23 @@ void GameMainScene::Initialize()
 	}
 
 	//オブジェクトの生成
-	player = new Player;
+	
+	/*for (int i = 1; i <= 4; i++) {
+		player[i-1] = new Player(i);
+	}*/
+
+	player[0] = new Player(DX_INPUT_PAD1);
+	player[1] = new Player(DX_INPUT_PAD2);
+	player[2] = new Player(DX_INPUT_PAD3);
+	player[3] = new Player(DX_INPUT_PAD4);
+
 	enemy = new Enemy* [10];
 
 	//オブジェクトの初期化
-	player->Initialize();
+	for (int i = 0; i < 4; i++) {
+		player[i]->Initialize();
+	}
+	//player->Initialize();
 
 	for (int i = 0; i < 10; i++)
 	{
@@ -64,25 +76,28 @@ void GameMainScene::Initialize()
 eSceneType GameMainScene::Update()
 {
 	//プレイヤーの更新
-	player->Update();
+	for (int i = 0; i < 4; i++) {
+		player[i]->Update();
+	}
+	//player->Update();
 
 	//移動距離の更新
-	mileage += (int)player->GetSpeed() + 5;
+	//mileage += (int)player->GetSpeed() + 5;
 
-	//敵生成処理
-	if (mileage / 20 % 100 == 0)
-	{
-		for (int i = 0; i < 10; i++)
-		{
-			if (enemy[i] == nullptr)
-			{
-				int type = GetRand(3) % 3;
-				enemy[i] = new Enemy(type, enemy_image[type]);
-				enemy[i]->Initialize();
-				break;
-			}
-		}
-	}
+	////敵生成処理
+	//if (mileage / 20 % 100 == 0)
+	//{
+	//	for (int i = 0; i < 10; i++)
+	//	{
+	//		if (enemy[i] == nullptr)
+	//		{
+	//			int type = GetRand(3) % 3;
+	//			enemy[i] = new Enemy(type, enemy_image[type]);
+	//			enemy[i]->Initialize();
+	//			break;
+	//		}
+	//	}
+	//}
 
 	//敵の更新と当たり判定チェック
 	for (int i = 0; i < 10; i++)
@@ -111,12 +126,27 @@ eSceneType GameMainScene::Update()
 			}
 		}
 	}
-
+	//////////////////////////////////////////
+	bool check[4] = { 0,1,0,0 };
 	//プレイヤーの燃料か体力が０未満なら、リザルトに遷移する
-	if (player->GetFuel() < 0.0f || player->GetHp() < 0.0f)
-	{
+	
+	for (int i = 0; i < 4; i++) {
+		if (player[i]->GetFuel() < 0.0f || player[i]->GetHp() < 0.0f)
+		{
+			check[i] = true;
+		}
+	}
+	int a = 0;
+	for (int i = 0; i < 4; i++) {
+		if (check[i] == true) {
+			a++;
+		}
+	}
+	if (a == 3) {
 		return eSceneType::E_RESULT;
 	}
+
+	/////////////////////////////////////
 
 	return GetNowScene();
 }
