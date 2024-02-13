@@ -58,11 +58,11 @@ void Player::Update()
 	Movement();
 
 	//‰ÁŒ¸‘¬ˆ—
-	Accleretion();
-
+	//Accleretion();
+	//XINPUT_BUTTON_LEFT_SHOULDER
 
 	//ƒoƒŠƒAˆ—
-	if (InputControl::GetButtonDown(XINPUT_BUTTON_B) && barrier_count > 0)
+	if (InputControl::GetButtonDown(XINPUT_BUTTON_A) && barrier_count > 0)
 	{
 		if (barrier == nullptr)
 		{
