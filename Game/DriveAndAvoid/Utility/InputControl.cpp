@@ -9,10 +9,12 @@ Vector2D InputControl::stick[2] = {};
 //入力機能:更新処理
 void  InputControl::Update()
 {
-
 	//XInputコントローラーの入力値を取得する
 	XINPUT_STATE input_state = {};
-	GetJoypadXInputState(DX_INPUT_PAD1, &input_state);
+	/*GetJoypadXInputState(DX_INPUT_PAD1, &input_state);
+	GetJoypadXInputState(DX_INPUT_PAD2, &input_state);
+	GetJoypadXInputState(DX_INPUT_PAD3, &input_state);
+	GetJoypadXInputState(DX_INPUT_PAD4, &input_state);*/
 
 	//ボタン入力値の更新
 	for (int i = 0; i < 16; i++)
@@ -71,9 +73,25 @@ void  InputControl::Update()
 		stick[1].y = -((float)input_state.ThumbRY / (float)SHRT_MIN);
 	}
 
-}
-//
+	// 入力デバイスの設定
+	GetJoypadInputState(DX_INPUT_PAD1 | DX_INPUT_PAD2 | DX_INPUT_PAD3 | DX_INPUT_PAD4);
 
+	while (ScreenFlip() == 0 && ProcessMessage() == 0 && ClearDrawScreen() == 0)
+	{
+		// コントローラーの入力を処理
+		int padState[4];
+		for (int i = 0; i < 4; ++i)
+		{
+			padState[i] = GetJoypadInputState(DX_INPUT_PAD1 + i);
+		}
+
+		// 各コントローラーの入力状態を表示
+		for (int i = 0; i < 4; ++i)
+		{
+			DrawFormatString(10, 10 + i * 20, GetColor(255, 255, 255), "Pad %d: %08X", i + 1, padState[i]);
+		}
+	}
+}
 //ボタン取得:押してる間
 bool InputControl::GetButton(int button)
 {
@@ -92,7 +110,7 @@ bool InputControl::GetButtonDown(int button)
 bool InputControl::GetButtonUp(int button)
 {
 	return CheckButtonRange(button) && (!now_button[button] &&
-		old_button[button]);
+	old_button[button]);
 }
 
 //左トリガー取得
