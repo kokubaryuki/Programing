@@ -10,8 +10,8 @@ private:
 	int menu_image;      //メニュー画像
 	int cursor_image;    //カーソル画像
 	int menu_cursor;     //メニューカーソル番号
-
-
+	int TitleBGM;        //タイトルのBGM用変数]
+	int SHandle;
 public:
 	TitleScene();
 	virtual~TitleScene();;
