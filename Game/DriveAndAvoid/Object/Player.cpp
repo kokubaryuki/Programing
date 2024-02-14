@@ -3,11 +3,12 @@
 #include"cmath"
 #include "DxLib.h"
 
-Player::Player(int pad) :is_active(false), image(NULL), location(0.0f), box_size(0.0f),
+Player::Player(int pad,float x,float y) :is_active(false), image(NULL), box_size(0.0f),
 angle(0.0f), speed(0.0f), hp(0.0f), fuel(0.0f), barrier_count(0),barrier(nullptr)
 {
 	mypad = pad;
-
+	location.x = x;
+	location.y = y;
 }
 
 Player::~Player()
@@ -19,13 +20,31 @@ Player::~Player()
 void Player::Initialize()
 {
 	is_active = true;
-	location = Vector2D(320.0f, 380.0f);
+	//location = Vector2D(320.0f, 380.0f);
 	box_size = Vector2D(31.0f, 60.0f);
 	angle = 0.0f;
 	speed = 3.0f;
 	hp = 10;
 	fuel = 20000;
 	barrier_count = 3;
+
+	switch (mypad)
+	{
+		case 0:
+			dspos = Vector2D(50, 50);
+			break;
+		case 1:
+			dspos = Vector2D(1100, 50);
+			break;
+		case 2:
+			dspos = Vector2D(50, 670);
+			break;
+		case 3:
+			dspos = Vector2D(1100, 670);
+			break;
+		default:
+			break;
+	}
 
 	//画像の読込み
 	image = LoadGraph("Resource/images/car1pol.bmp");
@@ -38,6 +57,7 @@ void Player::Initialize()
 	for (int i = 0; i < 20; i++) {
 		effect[i] = nullptr;
 	}
+	driftse = LoadSoundMem("Resource/SE/drift.wav");
 }
 
 //更新処理
@@ -69,11 +89,10 @@ void Player::Update()
 			smash_available = true;
 			smash_cool_count = 0;
 		}
-
 	}
 
 	//スマッシュ攻撃状態じゃなければ、ドリフト可能
-	if (player_state != STATE::SMASH) {
+	if (player_state != STATE::SMASH && 0 < stamina) {
 		Drift();
 	}
 	
@@ -146,7 +165,28 @@ void Player::Update()
 			}
 		}
 	}
-
+	if (player_state == STATE::DRIFT) {
+		if (!CheckSoundMem(driftse)) {
+			PlaySoundMem(driftse, DX_PLAYTYPE_BACK);
+		}
+		stamina--;
+		if (stamina <= 0) 
+		{
+			stamina = 0;
+			can_drift = false;
+		}
+	}
+	else 
+	{
+		StopSoundMem(driftse);
+		stamina++;
+		if (420 <= stamina) 
+		{
+			stamina = 420;
+			can_drift = true;
+		}
+	}
+	stamina_ratio = (stamina / MAX_STAMINA) * 100.0f;
 }
 
 //描画処理
@@ -157,6 +197,20 @@ void Player::Draw()
 			effect[i]->Draw();
 		}
 	}
+	//スタミナバー(仮)
+	if (can_drift == true) {
+		DrawBox(dspos.x - 3, dspos.y - 3, dspos.x + 100 + 3, dspos.y + 50 + 3, 0xffffff, false);
+		DrawBox(dspos.x, dspos.y, dspos.x + stamina_ratio, dspos.y + 50, 0xff0000, true);
+	}
+	else {
+		DrawBox(dspos.x - 3, dspos.y - 3, dspos.x + 100 + 3, dspos.y + 50 + 3, 0xffffff, false);
+		
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 75);
+		DrawBox(dspos.x, dspos.y, dspos.x + stamina_ratio, dspos.y + 50, 0xff0000, true);
+		//設定を元に戻す。
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	}
+	
 
 	DrawRotaGraphF(location.x, location.y, 1.0, angle, image, TRUE);
 
@@ -248,6 +302,11 @@ bool Player::IsBarrier() const
 	return (barrier != nullptr);
 }
 
+float Player::GetRad() const
+{
+	return myrad;
+}
+
 //移動処理
 void Player::Movement()
 {
@@ -307,8 +366,8 @@ void Player::Movement()
 //加減速処理
 void Player::Drift()
 {
-	//RBボタンが押されたら、加速する
-	if (InputControl::GetButton(mypad,XINPUT_BUTTON_RIGHT_SHOULDER))
+	//RBボタンが押されている間、加速する
+	if (InputControl::GetButton(mypad,XINPUT_BUTTON_RIGHT_SHOULDER) && can_drift == true)
 	{
 		Interpolation_rate = DRIFT_RATE;
 		player_state = STATE::DRIFT;
@@ -318,13 +377,11 @@ void Player::Drift()
 		Interpolation_rate = DRIVE_RATE;
 		player_state = STATE::DRIVE;
 	}
+	
 }
 
 void Player::Smash()
 {
-	
-	
-	
 	//Aボタンでスマッシュ攻撃＆スマッシュ攻撃状態に遷移
 	if (InputControl::GetButtonDown(mypad, XINPUT_BUTTON_A) && smash_available == true)
 	{

@@ -15,6 +15,7 @@
 #define DRIVE_RATE			0.010f		//ドライブ状態
 #define SMASH_POWER			300.0f		//スマッシュパワー
 #define DRAWING_INTERVAL	2			//エフェクト描画間隔
+#define MAX_STAMINA			420.0f			//スタミナ最大値(60*7 -> 7秒)
 
 enum class STATE {
 	IDLE = 0,		//アイドル
@@ -44,11 +45,14 @@ private:
 	bool smash_available = true;
 	int smash_cool_count = 0;
 	/******************/
-	
+	float myrad = 16.0f;					//半径
+	int mass = DX_PI * myrad * myrad;	//質量(面積)
+	Vector2D move_direction;		//速度ベクトル
+
 	STATE player_state;
 	double radt;
 	Vector2D move_vector;
-	Vector2D move_direction;
+	
 	float acceleration = 0.0f;
 	float sqrt_val = 0.0f;
 	bool a = false;
@@ -67,9 +71,14 @@ private:
 	Effect* effect[20];
 	int drawing_count = 0;
 	int drawing_num = 0;
+	int stamina = 420;
+	float stamina_ratio = (stamina / MAX_STAMINA) * 100.0f;
+	bool can_drift = true;
+	int driftse;
+	Vector2D dspos;
 	/******************/
 public:
-	Player(int pad);
+	Player(int pad,float x, float y);
 	~Player();
 	
 	void Initialize(); //初期化処理
@@ -82,6 +91,7 @@ public:
 	void SetActive(bool flg);      //有効フラグ設定
 	void DecreaseHp(float velue);  //体力減少処理
 	Vector2D GetLocation()const;   //位置座標取得
+	float GetRad()const;		   //半径取得
 	Vector2D GetBoxSize()const;    //当たり判定の大きさ取得
 	float GetSpeed() const;        //速さ取得処理
 	float GetFuel()const;          //燃料取得

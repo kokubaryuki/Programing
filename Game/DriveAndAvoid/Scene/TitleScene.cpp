@@ -16,6 +16,7 @@ TitleScene::~TitleScene()
 //初期化処理
 void TitleScene::Initialize()
 {
+
 	SHandle = LoadSoundMem("Resource/BGM/Titlebgm.wav");
 	//画像の読込み
 	background_image = LoadGraph("Resource/images/Title2.png");
@@ -49,7 +50,7 @@ eSceneType TitleScene::Update()
 	//カーソル下移動
 	if (InputControl::GetButtonDown(0,XINPUT_BUTTON_DPAD_DOWN))
 	{
-		PlaySoundMem(SHandle, DX_PLAYTYPE_BACK, TRUE);
+		//PlaySoundMem(SHandle, DX_PLAYTYPE_BACK, TRUE);
 		menu_cursor++;
 
 		//一番下に到達したら、一番上にする
@@ -112,6 +113,7 @@ void TitleScene::Finalize()
 	DeleteGraph(background_image);
 	DeleteGraph(menu_image);
 	DeleteGraph(cursor_image);
+	StopSoundMem(SHandle);
 }
 
 //現在のシーン情報を取得
