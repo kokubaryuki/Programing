@@ -265,11 +265,11 @@ bool GameMainScene::IsHitCheck(Player* p, Enemy* e)
 		return false;
 	}
 
-	//ƒWƒƒƒXƒK
-	if (p -> GetbarrierTime() < 12)
-	{
+	////ƒWƒƒƒXƒK
+	//if (p -> GetbarrierTime() < 12)
+	//{
 
-	}
+	//}
 	
 	//“G‚Ìî•ñ‚ª–³‚¯‚ê‚ÎA“–‚½‚è”»’è‚ğ–³‹‚·‚é
 	if (e == nullptr)
