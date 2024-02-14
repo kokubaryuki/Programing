@@ -16,12 +16,12 @@ HelpScene::~HelpScene()
 void HelpScene::Initialize()
 {
 	//画像の読込み
-	background_image = LoadGraph("Resource/images/Title.bmp");
+	background_image = LoadGraph("Resource/images/help (3).png");
 
 	//エラーチェック
 	if (background_image == -1)
 	{
-		throw("Resource/images/Title.bmpがありません\n");
+		throw("Resource/images/help (3).pngがありません\n");
 	}
 }
 
