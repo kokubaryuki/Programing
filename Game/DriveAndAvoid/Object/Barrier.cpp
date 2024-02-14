@@ -1,5 +1,8 @@
 #include"Barrier.h"
 #include"DxLib.h"
+#include"Player.h"
+
+//float Player::angle;
 
 Barrier::Barrier() : life_span(1000)
 {
@@ -25,7 +28,7 @@ Barrier::~Barrier()
 //•`‰æˆ—
 void Barrier::Draw(const Vector2D& location)
 {
-	DrawRotaGraphF(location.x, location.y, 1.0, 0.0, image, TRUE);
+	DrawRotaGraphF(location.x, location.y, 1.0, Barrier_angle, image, TRUE);
 }
 
 //õ–½‚Ís‚«‚½‚©H
