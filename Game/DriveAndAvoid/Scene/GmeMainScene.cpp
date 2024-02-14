@@ -4,7 +4,7 @@
 #include<math.h>
 
 GameMainScene::GameMainScene() :high_score(0), back_ground(NULL),
-barrier_image(NULL), mileage(0), /*player(nullptr),*/ enemy(nullptr)
+barrier_image(NULL), mileage(0), /*player(nullptr),*/ enemy(nullptr),Ui(0)
 {
 	for (int i = 0; i < 3; i++)
 	{
@@ -28,7 +28,7 @@ void GameMainScene::Initialize()
 	back_ground = LoadGraph("Resource/images/Stage.png");
 	barrier_image = LoadGraph("Resource/images/barrier.png");
 	int result = LoadDivGraph("Resource/images/car.bmp", 3, 3, 1, 63, 120, enemy_image);
-
+	Ui = LoadGraph("Resource/images/UIパーセントゲージ.png");
 
 	//エラーチェック
 	if (back_ground == -1)
@@ -44,6 +44,11 @@ void GameMainScene::Initialize()
 	if (barrier_image == -1)
 	{
 		throw("Resource/images/barrier.pngがありません\n");
+	}
+
+	if (Ui == -1)
+	{
+		throw("Resource/images/UIパーセントゲージ.pngがありません\n");
 	}
 
 	//オブジェクトの生成
@@ -161,6 +166,8 @@ void GameMainScene::Draw() const
 	//背景画像の画像
 	//DrawGraph(0, mileage % 480 - 480, back_ground, TRUE);
 	DrawGraph(225, mileage % 480, back_ground, TRUE);
+
+	DrawGraph(225, 480, Ui, TRUE);
 
 	//敵の描画
 	for (int i = 0; i < 10; i++)

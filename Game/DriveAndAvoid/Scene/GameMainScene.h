@@ -16,7 +16,7 @@ private:
 	int SHandle;
 	Player* player[4] = {};
 	Enemy** enemy;
-
+	int Ui;
 
 public:
 	GameMainScene();
