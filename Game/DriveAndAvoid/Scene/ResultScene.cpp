@@ -20,6 +20,7 @@ ResultScene::~ResultScene()
 //初期化処理
 void ResultScene::Initialize()
 {
+	
 	//画像の読込み
 	back_ground = LoadGraph("Resource/images/back.bmp");
 	int result = LoadDivGraph("Resource/images/car.bmp", 3, 3, 1, 63, 120,
@@ -44,8 +45,9 @@ void ResultScene::Initialize()
 //更新処理
 eSceneType ResultScene::Update()
 {
+	
 	//Bボタンでランキングに移動する
-	if (InputControl::GetButtonDown(1,XINPUT_BUTTON_B))
+	if (InputControl::GetButtonDown(0,XINPUT_BUTTON_B))
 	{
 		return eSceneType::E_RANKING_INPUT;
 	}
@@ -68,6 +70,9 @@ void ResultScene::Draw() const
 	DrawString(220, 170, "ゲームオーバー", GetColor(204, 0, 0));
 	SetFontSize(16);
 	DrawString(180, 200, "走行距離     ", GetColor(0, 0, 0));
+
+	
+
 
 
 

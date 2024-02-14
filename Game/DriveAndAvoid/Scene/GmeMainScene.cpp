@@ -23,9 +23,9 @@ void GameMainScene::Initialize()
 {
 	//高得点値を読み込む
 	ReadHighScore();
-
+	SHandle = LoadSoundMem("Resource/BGM/戦闘bgm.wav");
 	//画像の読込み
-	back_ground = LoadGraph("Resource/images/back.bmp");
+	back_ground = LoadGraph("Resource/images/Stage.png");
 	barrier_image = LoadGraph("Resource/images/barrier.png");
 	int result = LoadDivGraph("Resource/images/car.bmp", 3, 3, 1, 63, 120, enemy_image);
 
@@ -159,8 +159,8 @@ eSceneType GameMainScene::Update()
 void GameMainScene::Draw() const
 {
 	//背景画像の画像
-	DrawGraph(0, mileage % 480 - 480, back_ground, TRUE);
-	DrawGraph(0, mileage % 480, back_ground, TRUE);
+	//DrawGraph(0, mileage % 480 - 480, back_ground, TRUE);
+	DrawGraph(225, mileage % 480, back_ground, TRUE);
 
 	//敵の描画
 	for (int i = 0; i < 10; i++)
@@ -177,21 +177,21 @@ void GameMainScene::Draw() const
 	}
 	
 
-	//UIの描画
-	DrawBox(500, 0, 640, 480, GetColor(0, 153, 0), TRUE);
-	SetFontSize(16);
-	DrawFormatString(510, 20, GetColor(0, 0, 0), "ハイスコア");
-	DrawFormatString(560, 40, GetColor(255, 255, 255), "%08d", high_score);
-	DrawFormatString(510, 80, GetColor(0, 0, 0), "避けた数");
+	////UIの描画
+	//DrawBox(500, 0, 640, 480, GetColor(0, 153, 0), TRUE);
+	//SetFontSize(16);
+	//DrawFormatString(510, 20, GetColor(0, 0, 0), "ハイスコア");
+	//DrawFormatString(560, 40, GetColor(255, 255, 255), "%08d", high_score);
+	//DrawFormatString(510, 80, GetColor(0, 0, 0), "避けた数");
 
-	for (int i = 0; i < 3; i++)
-	{
-		DrawRotaGraph(523 + (i * 50), 120, 0.3, 0, enemy_image[i], TRUE, FALSE);
-		DrawFormatString(510 + (i * 50), 140, GetColor(255, 255, 255), "%03d", enemy_count[i]);
-	}
+	//for (int i = 0; i < 3; i++)
+	//{
+	//	DrawRotaGraph(523 + (i * 50), 120, 0.3, 0, enemy_image[i], TRUE, FALSE);
+	//	DrawFormatString(510 + (i * 50), 140, GetColor(255, 255, 255), "%03d", enemy_count[i]);
+	//}
 
-	DrawFormatString(510, 200, GetColor(0, 0, 0), "走行距離");
-	DrawFormatString(555, 220, GetColor(255, 255, 255), "%08d", mileage / 10);
+	//DrawFormatString(510, 200, GetColor(0, 0, 0), "走行距離");
+	//DrawFormatString(555, 220, GetColor(255, 255, 255), "%08d", mileage / 10);
 	/*DrawFormatString(510, 240, GetColor(0, 0, 0), "スピード");
 	DrawFormatString(555, 260, GetColor(255, 255, 255), "%08.1f", player->GetSpeed());*/
 
@@ -305,6 +305,13 @@ bool GameMainScene::IsHitCheck(Player* p, Enemy* e)
 		return false;
 	}
 
+//<<<<<<< HEAD
+	////ジャスガ
+	//if (p -> GetbarrierTime() < 12)
+	//{
+
+	//}
+	
 	//敵の情報が無ければ、当たり判定を無視する
 	if (e == nullptr)
 	{
@@ -319,7 +326,7 @@ bool GameMainScene::IsHitCheck(Player* p, Enemy* e)
 
 
 	//コリジョンデータより位置情報の差が小さいなら、ヒットする
-	return ((fabsf(diff_location.x) < box_ex.x) && (fabsf(diff_location.y) < (box_ex.y)));
+	//return ((fabsf(diff_location.x) < box_ex.x) && (fabsf(diff_location.y) < (box_ex.y)));
 }
 
 
