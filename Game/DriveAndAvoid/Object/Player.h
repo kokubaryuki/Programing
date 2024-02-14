@@ -41,6 +41,8 @@ private:
 	int barrier_count;//バリアの枚数
 	Barrier* barrier; //バリア
 	
+	bool smash_available = true;
+	int smash_cool_count = 0;
 	/******************/
 	
 	STATE player_state;

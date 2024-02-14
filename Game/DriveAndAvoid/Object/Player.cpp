@@ -62,6 +62,15 @@ void Player::Update()
 	if (player_state != STATE::OUTOFCONTROLL) {
 		Smash();
 	}
+	if (smash_available == false)
+	{
+		smash_cool_count++;
+		if (smash_cool_count >= 600) {
+			smash_available = true;
+			smash_cool_count = 0;
+		}
+
+	}
 
 	//スマッシュ攻撃状態じゃなければ、ドリフト可能
 	if (player_state != STATE::SMASH) {
@@ -313,10 +322,14 @@ void Player::Drift()
 
 void Player::Smash()
 {
+	
+	
+	
 	//Aボタンでスマッシュ攻撃＆スマッシュ攻撃状態に遷移
-	if (InputControl::GetButtonDown(mypad, XINPUT_BUTTON_A)) 
+	if (InputControl::GetButtonDown(mypad, XINPUT_BUTTON_A) && smash_available == true)
 	{
 		player_state = STATE::SMASH;
+		smash_available = false;
 		//補間レートを初期化
 		smash_rate = 0.0f;
 		//
