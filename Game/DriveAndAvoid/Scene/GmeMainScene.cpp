@@ -30,22 +30,6 @@ void GameMainScene::Initialize()
 	int result = LoadDivGraph("Resource/images/car.bmp", 3, 3, 1, 63, 120, enemy_image);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	//エラーチェック
 	if (back_ground == -1)
 	{

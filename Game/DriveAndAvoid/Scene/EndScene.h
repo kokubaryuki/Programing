@@ -1,12 +1,14 @@
 #pragma once
-#include "SceneBase.h"
-class EndScene : public SceneBase
+
+#include"SceneBase.h"
+
+class EndScene :public SceneBase
 {
 private:
 
 	int back_ground;    //”wŒi‰æ‘œ
 	int y;              //y²
-	int Timestop = 0;   //ŠÔ’â~
+	//int Timestop = 0;   //ŠÔ’â~
 
 public:
 	EndScene();

@@ -77,12 +77,13 @@ if (InputControl::GetButtonDown(0,XINPUT_BUTTON_B))
 		{
 		case 0:
 			return eSceneType::E_MAIN;
+			break;
 		case 1:
 			return eSceneType::E_HELP;
-
+			break;
 		default:
-			return eSceneType::E_END;
-
+			return eSceneType::E_CREDIT;
+			break;
 		}
 	}
 	//現在のシーンタイプを返す
