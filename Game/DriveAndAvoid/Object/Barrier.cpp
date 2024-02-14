@@ -1,6 +1,5 @@
 #include"Barrier.h"
 #include"DxLib.h"
-#include"Player.h"
 
 //float Player::angle;
 

@@ -16,6 +16,9 @@ private:
 	Player* player[4] = {};
 	Enemy** enemy;
 
+	int combination2[1][2] = { { 0,1 } };
+	int combination3[3][2] = { { 0,1 }, { 0,2 }, { 1,2 } };
+	int combination4[6][2] = { { 0,1 }, { 0,2 }, { 0,3 }, { 1,2 }, { 1,3 }, { 2,3 } };
 
 public:
 	GameMainScene();

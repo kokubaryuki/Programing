@@ -176,6 +176,7 @@ void Player::Draw()
 	{
 		DrawFormatString(700, 90, 0xffffff, "DRIVE");
 	}
+	DrawCircle(location.x + (box_size.x / 2.0f), location.y + (box_size.y / 2), 0xff0000, false, 3);
 }
 
 

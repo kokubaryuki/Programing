@@ -67,6 +67,7 @@ private:
 	Effect* effect[20];
 	int drawing_count = 0;
 	int drawing_num = 0;
+	float radius = 16.0f;
 	/******************/
 public:
 	Player(int pad);

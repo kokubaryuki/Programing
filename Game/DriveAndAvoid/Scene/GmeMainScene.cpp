@@ -305,15 +305,6 @@ bool GameMainScene::IsHitCheck(Player* p, Enemy* e)
 		return false;
 	}
 
-<<<<<<< HEAD
-=======
-	////ƒWƒƒƒXƒK
-	//if (p -> GetbarrierTime() < 12)
-	//{
-
-	//}
-	
->>>>>>> angle_test
 	//“G‚Ìî•ñ‚ª–³‚¯‚ê‚ÎA“–‚½‚è”»’è‚ğ–³‹‚·‚é
 	if (e == nullptr)
 	{
