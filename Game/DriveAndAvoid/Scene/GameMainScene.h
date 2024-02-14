@@ -13,6 +13,7 @@ private:
 	int mileage;
 	int enemy_image[3];
 	int enemy_count[3];
+	int SHandle;
 	Player* player[4] = {};
 	Enemy** enemy;
 

@@ -5,20 +5,21 @@
 TitleScene::TitleScene() :background_image(NULL), menu_image(NULL),
 cursor_image(NULL), menu_cursor(0)
 {
-
+	
 }
 
 TitleScene::~TitleScene()
 {
-
+	
 }
 
 //初期化処理
 void TitleScene::Initialize()
 {
+	SHandle = LoadSoundMem("Resource/BGM/Titlebgm.wav");
 	//画像の読込み
 	background_image = LoadGraph("Resource/images/Title2.png");
-	menu_image= LoadGraph("Resource/images/menu.bmp");
+	menu_image= LoadGraph("Resource/images/Title1.png");
 	cursor_image= LoadGraph("Resource/images/cone.bmp");
 
 	//エラーチェック
@@ -36,19 +37,23 @@ void TitleScene::Initialize()
 	{
 		throw("Resource/images/cone.bmpがありません\n");
 	}
-
+	ChangeVolumeSoundMem(255, SHandle);
+	PlaySoundMem(SHandle, DX_PLAYTYPE_LOOP, TRUE);
 }
 
 //更新処理
 eSceneType TitleScene::Update()
 {
+	bool ok = CheckSoundMem(SHandle);
+
 	//カーソル下移動
 	if (InputControl::GetButtonDown(0,XINPUT_BUTTON_DPAD_DOWN))
 	{
+		PlaySoundMem(SHandle, DX_PLAYTYPE_BACK, TRUE);
 		menu_cursor++;
 
 		//一番下に到達したら、一番上にする
-		if (menu_cursor > 3)
+		if (menu_cursor > 2)
 		{
 			menu_cursor = 0;
 		}
@@ -61,23 +66,18 @@ eSceneType TitleScene::Update()
 		//一番上に到達したら、一番下にする
 		if (menu_cursor < 0)
 		{
-			menu_cursor = 3;
+			menu_cursor = 2;
 		}
 	}
 
-
-	//カーソル決定（決定した画面に移動する)
-	if (InputControl::GetButtonDown(0,XINPUT_BUTTON_B))
+if (InputControl::GetButtonDown(0,XINPUT_BUTTON_B))
 	{
+
 		switch (menu_cursor)
 		{
 		case 0:
 			return eSceneType::E_MAIN;
-
 		case 1:
-			return eSceneType::E_RANKING_DISP;
-
-		case 2:
 			return eSceneType::E_HELP;
 
 		default:
@@ -85,7 +85,6 @@ eSceneType TitleScene::Update()
 
 		}
 	}
-
 	//現在のシーンタイプを返す
 	return GetNowScene();
 }
@@ -101,7 +100,7 @@ void TitleScene::Draw()const
 	DrawGraph(120, 200, menu_image, TRUE);
 
 	//カーソル画像の描画
-	DrawRotaGraph(90, 220 + menu_cursor * 40, 0.7, DX_PI / 2.0, cursor_image, TRUE);
+	DrawRotaGraph(90, 220 + menu_cursor * 58, 0.7, DX_PI / 2.0, cursor_image, TRUE);
 
 }
 
