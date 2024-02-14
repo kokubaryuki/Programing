@@ -17,14 +17,14 @@ TitleScene::~TitleScene()
 void TitleScene::Initialize()
 {
 	//画像の読込み
-	background_image = LoadGraph("Resource/images/Title2.png");
+	background_image = LoadGraph("Resource/images/Title.png");
 	menu_image= LoadGraph("Resource/images/menu.bmp");
 	cursor_image= LoadGraph("Resource/images/cone.bmp");
 
 	//エラーチェック
 	if (background_image == -1)
 	{
-		throw("Resource/images/Title2.pigがありません\n");
+		throw("Resource/images/Title.pigがありません\n");
 	}
 
 	if (menu_image == -1)
