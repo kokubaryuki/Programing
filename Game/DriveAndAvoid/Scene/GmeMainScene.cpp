@@ -305,15 +305,15 @@ bool GameMainScene::IsHitCheck(Player* p, Enemy* e)
 		return false;
 	}
 
-<<<<<<< HEAD
-=======
+//<<<<<<< HEAD
+//=======
 	////ジャスガ
 	//if (p -> GetbarrierTime() < 12)
 	//{
 
 	//}
-	
->>>>>>> angle_test
+//	
+//>>>>>>> angle_test
 	//敵の情報が無ければ、当たり判定を無視する
 	if (e == nullptr)
 	{
@@ -328,7 +328,7 @@ bool GameMainScene::IsHitCheck(Player* p, Enemy* e)
 
 
 	//コリジョンデータより位置情報の差が小さいなら、ヒットする
-	return ((fabsf(diff_location.x) < box_ex.x) && (fabsf(diff_location.y) < (box_ex.y)));
+	/*return ((fabsf(diff_location.x) < box_ex.x) && (fabsf(diff_location.y) < (box_ex.y)));*/
 }
 
 

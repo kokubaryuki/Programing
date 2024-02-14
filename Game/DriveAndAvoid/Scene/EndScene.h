@@ -1,16 +1,16 @@
 #pragma once
-
-#include"SceneBase.h"
-
-class HelpScene :public SceneBase
+#include "SceneBase.h"
+class EndScene : public SceneBase
 {
 private:
-	int background_image; //”wŒi‰æ‘œ
 
+	int back_ground;    //”wŒi‰æ‘œ
+	int y;              //yŽ²
+	int Timestop = 0;   //ŽžŠÔ’âŽ~
 
 public:
-	HelpScene();
-	virtual~HelpScene();
+	EndScene();
+	virtual~EndScene();
 
 	virtual void Initialize() override;
 	virtual eSceneType Update() override;
@@ -18,4 +18,6 @@ public:
 	virtual void Finalize()override;
 
 	virtual eSceneType GetNowScene() const override;
+
 };
+
