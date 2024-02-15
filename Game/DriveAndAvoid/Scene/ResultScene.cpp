@@ -23,19 +23,12 @@ void ResultScene::Initialize()
 {
 	
 	//画像の読込み
-	back_ground = LoadGraph("Resource/images/Title.png");
-	int result = LoadDivGraph("Resource/images/car.bmp", 3, 3, 1, 63, 120,
-		enemy_image);
+	back_ground = LoadGraph("Resource/images/RESULT.png");
 
 	//エラーチェック
 	if (back_ground == -1)
 	{
-		throw("Resource/images/back.bmpがありません\n");
-	}
-
-	if (result == -1)
-	{
-		throw("Resource/images/car.bmpがありません\n");
+		throw("Resource/images/RESULT.pngがありません\n");
 	}
 	//ゲームの結果
 	ReadResultData();
@@ -57,7 +50,7 @@ eSceneType ResultScene::Update()
 void ResultScene::Draw() const
 {
 	//背景画像を描画
-	DrawGraph(0, 0, back_ground, TRUE);
+	DrawGraph(0, -66, back_ground, TRUE);
 
 	////スコア等表示領域
 	//DrawBox(150, 150, 490, 330, GetColor(0, 153, 0), TRUE);

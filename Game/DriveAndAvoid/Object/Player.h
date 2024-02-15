@@ -30,7 +30,6 @@ enum class STATE {
 class Player
 {
 private:
-	bool is_active;   //有効状態か？
 	int image;        //画像データ
 	Vector2D location;//位置座標
 	Vector2D box_size;//当たり判定
@@ -88,8 +87,6 @@ public:
 	void Finalize();   //終了処理
 
 public:
-
-	void SetActive(bool flg);      //有効フラグ設定
 	void DecreaseHp(float velue);  //体力減少処理
 	Vector2D GetLocation()const;   //位置座標取得
 	float GetRad()const;		   //半径取得

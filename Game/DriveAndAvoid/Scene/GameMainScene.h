@@ -37,7 +37,7 @@ private:
 	int readysound = 0;
 	Vector2D n;
 	int DownCount = 0;
-	static int ranking;
+	int back_image;
 	/////////////////////////////////////////////////////
 public:
 	GameMainScene();
@@ -49,8 +49,6 @@ public:
 	virtual void Finalize()override;
 
 	virtual eSceneType GetNowScene()const override;
-
-	int GetRanking() { return ranking; }
 
 private:
 	//ハイスコア読込み処理

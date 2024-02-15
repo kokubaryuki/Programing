@@ -18,15 +18,16 @@ GameMainScene::~GameMainScene()
 void GameMainScene::Initialize()
 {
 	Number_of_connections = GetJoypadNum();
-	readysound = LoadSoundMem("Resource/SE/ready.wav");
+	readysound = LoadSoundMem("Resource/SE/READY.mp3");
 
 	//高得点値を読み込む
 	ReadHighScore();
 	SHandle = LoadSoundMem("Resource/BGM/戦闘bgm.wav");
 	//画像の読込み
 	back_ground = LoadGraph("Resource/images/Stage.png");
+	back_image = LoadGraph("Resource/images/STAGEBACK.png");
 	barrier_image = LoadGraph("Resource/images/barrier.png");
-	int result = LoadDivGraph("Resource/images/car.bmp", 3, 3, 1, 63, 120, enemy_image);
+	//int result = LoadDivGraph("Resource/images/car.bmp", 3, 3, 1, 63, 120, enemy_image);
 
 
 	//エラーチェック
@@ -35,50 +36,41 @@ void GameMainScene::Initialize()
 		throw("Resource/images/back.bmpがありません\n");
 	}
 
-	if (result == -1)
-	{
-		throw("Resource/images/car.bmpがありません\n");
-	}
-
 	if (barrier_image == -1)
 	{
 		throw("Resource/images/barrier.pngがありません\n");
 	}
 	//, 275:50, 1000:50, 275:670  1000:670
-	//オブジェクトの生成
-	/*for (int i = 0; i < Number_of_connections + 1; i++) {
-		player[i] = new Player(i,);
-	}*/
-	//switch (Number_of_connections) {
-	//case 2:
-	//	for (int i = 0; i < Number_of_connections; i++) {
-	//		player[i] = new Player(i, Setlocation[Number_of_connections - 2][i].x, Setlocation[Number_of_connections - 2][i].y);
-	//	}
-	//	break;
-	//case 3:
-	//	for (int i = 0; i < Number_of_connections; i++) {
-	//		player[i] = new Player(i, Setlocation[Number_of_connections - 2][i].x, Setlocation[Number_of_connections - 2][i].y);
-	//	}
-	//	break;
-	//case 4:
-	//	for (int i = 0; i < Number_of_connections; i++) {
-	//		player[i] = new Player(i, Setlocation[Number_of_connections - 2][i].x, Setlocation[Number_of_connections - 2][i].y);
-	//	}
-	//	break;
-	//default:
-	//	break;
-	//}
-	player[0] = new Player(0, 275, 50);
+	switch (Number_of_connections) {
+	case 2:
+		for (int i = 0; i < Number_of_connections; i++) {
+			player[i] = new Player(i, Setlocation[Number_of_connections - 2][i].x, Setlocation[Number_of_connections - 2][i].y);
+		}
+		break;
+	case 3:
+		for (int i = 0; i < Number_of_connections; i++) {
+			player[i] = new Player(i, Setlocation[Number_of_connections - 2][i].x, Setlocation[Number_of_connections - 2][i].y);
+		}
+		break;
+	case 4:
+		for (int i = 0; i < Number_of_connections; i++) {
+			player[i] = new Player(i, Setlocation[Number_of_connections - 2][i].x, Setlocation[Number_of_connections - 2][i].y);
+		}
+		break;
+	default:
+		break;
+	}
+	/*player[0] = new Player(0, 275, 50);
 	player[1] = new Player(1, 1000, 50);
 	player[2] = new Player(2, 275, 670);
-	player[3] = new Player(3, 1000, 670);
+	player[3] = new Player(3, 1000, 670);*/
 	//enemy = new Enemy* [10];
 
 	//オブジェクトの初期化
 	/*for (int i = 0; i < 4; i++) {
 		player[i]->Initialize();
 	}*/
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < Number_of_connections; i++) {
 		player[i]->Initialize();
 	}
 	//player->Initialize();
@@ -109,7 +101,7 @@ eSceneType GameMainScene::Update()
 		break;
 	case Mphase::GO:
 		//プレイヤーの更新
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < Number_of_connections; i++) {
 			if (player[i] != nullptr) {
 				player[i]->Update();
 				//画面外に行ったら死ぬ
@@ -123,13 +115,13 @@ eSceneType GameMainScene::Update()
 				}
 			}
 		}
-		if (tmp - 1/*Number_of_connections - 1*/ <= DownCount) {
+		if (Number_of_connections - 1 <= DownCount) {
 			phase = Mphase::FINISH;
 			DownCount = 0;
 			break;
 		}
 		//コントローラーの接続数次第で当たり判定を行う数を変える
-		switch (tmp/*Number_of_connections*/)
+		switch (Number_of_connections)
 		{
 		case 2:
 			if (player[0] == nullptr || player[1] == nullptr) 
@@ -182,74 +174,6 @@ eSceneType GameMainScene::Update()
 		break;
 	}
 
-
-	//移動距離の更新
-	//mileage += (int)player->GetSpeed() + 5;
-
-	////敵生成処理
-	//if (mileage / 20 % 100 == 0)
-	//{
-	//	for (int i = 0; i < 10; i++)
-	//	{
-	//		if (enemy[i] == nullptr)
-	//		{
-	//			int type = GetRand(3) % 3;
-	//			enemy[i] = new Enemy(type, enemy_image[type]);
-	//			enemy[i]->Initialize();
-	//			break;
-	//		}
-	//	}
-	//}
-
-	//敵の更新と当たり判定チェック
-	//for (int i = 0; i < 10; i++)
-	//{
-	//	if (enemy[i] != nullptr)
-	//	{
-	//		enemy[i]->Update(player->GetSpeed());
-
-	//		//画面外に行ったら、敵を削除そてスコア加算
-	//		if (enemy[i]->GetLocation().y >= 640.0f)
-	//		{
-	//			enemy_count[enemy[i]->GetType()]++;
-	//			enemy[i]->Finalize();
-	//			delete enemy[i];
-	//			enemy[i] = nullptr;
-	//		}
-
-	//		//当たり判定の確認
-	//		if (IsHitCheck(player, enemy[i]))
-	//		{
-	//			player->SetActive(false);
-	//			player->DecreaseHp(-50.0);
-	//			enemy[i]->Finalize();
-	//			delete enemy[i];
-	//			enemy[i] = nullptr;
-	//		}
-	//	}
-	//}
-	//////////////////////////////////////////
-	//bool check[4] = { 0,1,0,0 };
-	////プレイヤーの燃料か体力が０未満なら、リザルトに遷移する
-	//
-	//for (int i = 0; i < 4; i++) {
-	//	if (player[i]->GetFuel() < 0.0f || player[i]->GetHp() < 0.0f)
-	//	{
-	//		check[i] = true;
-	//	}
-	//}
-	//int a = 0;
-	//for (int i = 0; i < 4; i++) {
-	//	if (check[i] == true) {
-	//		a++;
-	//	}
-	//}
-	//if (a == 3) {
-	//	return eSceneType::E_RESULT;
-	//}
-
-	/////////////////////////////////////
-
 	return GetNowScene();
 }
 
@@ -258,10 +182,11 @@ void GameMainScene::Draw() const
 {
 	//背景画像の画像
 	//DrawGraph(0, mileage % 480 - 480, back_ground, TRUE);
-	DrawGraph(225, mileage % 480, back_ground, TRUE);
 
+	DrawRotaGraph(640, 360, 1.0, 0, back_image, false);
+	DrawGraph(225, mileage % 480, back_ground, TRUE);
 	//プレイヤーの描画
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < Number_of_connections; i++) {
 		if (player[i] != nullptr) {
 			player[i]->Draw();
 		}
@@ -283,23 +208,6 @@ void GameMainScene::Draw() const
 		break;
 	}
 
-
-
-	////燃料ゲージの描画
-	//float fx = 510.0f;
-	//float fy = 390.0;
-	//DrawFormatStringF(fx, fy, GetColor(0, 0, 0), "FUEL METER");
-	//DrawBoxAA(fx, fy + 20.0f, fx + (player->GetFuel() * 100 / 20000), fy +
-	//	40.0f, GetColor(0, 102, 204), TRUE);
-	//DrawBoxAA(fx, fy + 20.0f, fx + 100.0f, fy + 40.0f, GetColor(0, 0, 0), FALSE);
-
-	////体力ゲージの描画
-	//fx = 510.0f;
-	//fy = 430.0f;
-	//DrawFormatStringF(fx, fy, GetColor(0, 0, 0), "PLAYER HP");
-	//DrawBoxAA(fx, fy + 20.0f, fx + (player->GetHp() * 100 / 1000),
-	//	fy + 40.0f, GetColor(255, 0, 0), TRUE);
-	//DrawBoxAA(fx, fy + 20.0f, fx + 100.0f, fy + 40.0f, GetColor(0, 0, 0), FALSE);
 }
 
 //終了時処理
@@ -338,12 +246,12 @@ void GameMainScene::Finalize()
 	fclose(fp);
 
 	//動的確保したオブジェクトを削除する
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < Number_of_connections; i++) {
 		if(player[i] != nullptr)
 		player[i]->Finalize();
 	}
 	//player->Finalize();
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < Number_of_connections; i++) {
 		delete player[i];
 	}
 	
