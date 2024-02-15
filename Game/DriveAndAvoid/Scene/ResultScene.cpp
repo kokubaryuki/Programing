@@ -45,7 +45,6 @@ void ResultScene::Initialize()
 //更新処理
 eSceneType ResultScene::Update()
 {
-	
 	//Bボタンでランキングに移動する
 	if (InputControl::GetButtonDown(0,XINPUT_BUTTON_B))
 	{
@@ -64,7 +63,6 @@ void ResultScene::Draw() const
 	//DrawBox(150, 150, 490, 330, GetColor(0, 153, 0), TRUE);
 	//DrawBox(150, 150, 490, 330, GetColor(0, 0, 0), FALSE);
 	//DrawBox(500, 0, 640, 480, GetColor(0, 153, 0), TRUE);
-
 
 	SetFontSize(60);
 	DrawString(450, 230, "ランキング表", GetColor(255,215,0));
