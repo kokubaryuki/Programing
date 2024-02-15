@@ -28,7 +28,7 @@ void GameMainScene::Initialize()
 	back_ground = LoadGraph("Resource/images/Stage.png");
 	barrier_image = LoadGraph("Resource/images/barrier.png");
 	int result = LoadDivGraph("Resource/images/car.bmp", 3, 3, 1, 63, 120, enemy_image);
-	Ui = LoadGraph("Resource/images/UIパーセントゲージ.png");
+	Ui = LoadGraph("Resource/images/UI.png");
 
 	//エラーチェック
 	if (back_ground == -1)
@@ -48,7 +48,7 @@ void GameMainScene::Initialize()
 
 	if (Ui == -1)
 	{
-		throw("Resource/images/UIパーセントゲージ.pngがありません\n");
+		throw("Resource/images/UI.pngがありません\n");
 	}
 
 	//オブジェクトの生成
@@ -167,7 +167,11 @@ void GameMainScene::Draw() const
 	//DrawGraph(0, mileage % 480 - 480, back_ground, TRUE);
 	DrawGraph(225, mileage % 480, back_ground, TRUE);
 
-	DrawGraph(225, 480, Ui, TRUE);
+	DrawGraph(-120,80, Ui, TRUE);         //%右上
+	DrawGraph(-120,500, Ui, TRUE);        //%左上
+	DrawGraph(920,80, Ui, TRUE);          //%右下
+	DrawGraph(920,500, Ui, TRUE);         //%左下
+
 
 	//敵の描画
 	for (int i = 0; i < 10; i++)
