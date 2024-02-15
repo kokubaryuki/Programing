@@ -2,7 +2,6 @@
 
 #include"SceneBase.h"
 #include"../Object/Player.h"
-#include"../Object/Enemy.h"
 
 enum class Mphase
 {
@@ -28,7 +27,7 @@ private:
 	Vector2D Setlocation[3][4] = { { {275,380},{1000,380},{0,0}     ,{0,0}      },
 								   { {637,50} ,{275,670} ,{1000,670},{0,0}      },
 								   { {275,50} ,{1000,50} ,{275,670} ,{1000,670} } };
-	int Number_of_connections;
+	int Number_of_connections = 0;
 	int combination3[3][2] = { {0,1}, {0,2}, {1,2} };
 	int combination4[6][2] = { {0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3} };
 	int tmp = 4;

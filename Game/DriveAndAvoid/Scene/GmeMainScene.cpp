@@ -17,6 +17,7 @@ GameMainScene::~GameMainScene()
 //‰Šú‰»ˆ—
 void GameMainScene::Initialize()
 {
+	Number_of_connections = 0;
 	Number_of_connections = GetJoypadNum();
 	readysound = LoadSoundMem("Resource/SE/READY.mp3");
 
