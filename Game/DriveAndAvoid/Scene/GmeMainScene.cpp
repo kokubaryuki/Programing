@@ -77,6 +77,7 @@ eSceneType GameMainScene::Update()
 	/*for (int i = 0; i < 4; i++) {
 		player->Update();
 	}*/
+	PlaySoundMem(SHandle,DX_PLAYTYPE_LOOP,FALSE);
 	for (int i = 0; i < 4; i++){
 		player[i]->Update();
 	}

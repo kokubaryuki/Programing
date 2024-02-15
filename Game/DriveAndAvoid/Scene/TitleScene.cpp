@@ -38,20 +38,17 @@ void TitleScene::Initialize()
 		throw("Resource/images/cone.bmpがありません\n");
 	}
 	ChangeVolumeSoundMem(255, SHandle);
-	PlaySoundMem(SHandle, DX_PLAYTYPE_LOOP, TRUE);
 }
 
 //更新処理
 eSceneType TitleScene::Update()
 {
 	bool ok = CheckSoundMem(SHandle);
-
+	PlaySoundMem(SHandle, DX_PLAYTYPE_LOOP, FALSE);
 	//カーソル下移動
 	if (InputControl::GetButtonDown(0,XINPUT_BUTTON_DPAD_DOWN))
 	{
-		PlaySoundMem(SHandle, DX_PLAYTYPE_BACK, TRUE);
 		menu_cursor++;
-
 		//一番下に到達したら、一番上にする
 		if (menu_cursor > 2)
 		{
@@ -76,6 +73,7 @@ if (InputControl::GetButtonDown(0,XINPUT_BUTTON_B))
 		switch (menu_cursor)
 		{
 		case 0:
+			StopSoundMem(SHandle);
 			return eSceneType::E_MAIN;
 			break;
 		case 1:
