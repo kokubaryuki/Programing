@@ -20,8 +20,9 @@ ResultScene::~ResultScene()
 //初期化処理
 void ResultScene::Initialize()
 {
+	
 	//画像の読込み
-	back_ground = LoadGraph("Resource/images/back.bmp");
+	back_ground = LoadGraph("Resource/images/Title.png");
 	int result = LoadDivGraph("Resource/images/car.bmp", 3, 3, 1, 63, 120,
 		enemy_image);
 
@@ -44,10 +45,11 @@ void ResultScene::Initialize()
 //更新処理
 eSceneType ResultScene::Update()
 {
+	
 	//Bボタンでランキングに移動する
-	if (InputControl::GetButtonDown(1,XINPUT_BUTTON_B))
+	if (InputControl::GetButtonDown(0,XINPUT_BUTTON_B))
 	{
-		return eSceneType::E_RANKING_INPUT;
+		return eSceneType::E_TITLE;
 	}
 	return GetNowScene();
 }
@@ -58,27 +60,34 @@ void ResultScene::Draw() const
 	//背景画像を描画
 	DrawGraph(0, 0, back_ground, TRUE);
 
-	//スコア等表示領域
-	DrawBox(150, 150, 490, 330, GetColor(0, 153, 0), TRUE);
-	DrawBox(150, 150, 490, 330, GetColor(0, 0, 0), FALSE);
-	DrawBox(500, 0, 640, 480, GetColor(0, 153, 0), TRUE);
+	////スコア等表示領域
+	//DrawBox(150, 150, 490, 330, GetColor(0, 153, 0), TRUE);
+	//DrawBox(150, 150, 490, 330, GetColor(0, 0, 0), FALSE);
+	//DrawBox(500, 0, 640, 480, GetColor(0, 153, 0), TRUE);
 
 
-	SetFontSize(20);
-	DrawString(220, 170, "ゲームオーバー", GetColor(204, 0, 0));
-	SetFontSize(16);
-	DrawString(180, 200, "走行距離     ", GetColor(0, 0, 0));
+	SetFontSize(60);
+	DrawString(450, 230, "ランキング表", GetColor(255,215,0));
+	SetFontSize(55);
+	DrawString(395, 370, "1位:", GetColor(255,215,0));
+	SetFontSize(45);
+	DrawString(395, 440, "2位:", GetColor(119,136,153));
+	DrawString(395, 510, "3位:", GetColor(160,69,19));
+	DrawString(395, 570, "4位:", GetColor(255, 255, 255));
+
+	
+
 
 
 
 	for (int i = 0; i < 3; i++)
 	{
-		DrawRotaGraph(230, 230 + (i * 20), 0.3f, DX_PI_F / 2, enemy_image[i], TRUE);
-		DrawFormatString(260, 222 + (i * 21), GetColor(255, 255, 255), "%6d x %4d=%6d", enemy_count[i], (i + 1) * 50, (i + 1) * 50 * enemy_count[i]);
+		//D/*rawRotaGraph(230, 230 + (i * 20), 0.3f, DX_PI_F / 2, enemy_image[i], TRUE);
+		//DrawFormatString(260, 222 + (i * 21), GetColor(255, 255, 255), "%6d x %4d=%6d", enemy_count[i], (i + 1) * 50, (i + 1) * 50 * enemy_count[i]);*/
 	}
 
-	DrawString(180, 290, "スコア", GetColor(0, 0, 0));
-	DrawFormatString(180, 290, 0xFFFFFF, "      =%6d", score);
+	/*DrawString(180, 290, "スコア", GetColor(0, 0, 0));
+	DrawFormatString(180, 290, 0xFFFFFF, "      =%6d", score);*/
 
 	
 }

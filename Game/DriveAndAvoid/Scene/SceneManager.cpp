@@ -5,6 +5,7 @@
 #include"GameMainScene.h"
 #include"ResultScene.h"
 #include"HelpScene.h"
+#include"EndScene.h"
 #include"RankingDispScene.h"
 #include"RankingInputScene.h"
 
@@ -43,7 +44,7 @@ void SceneManager::Initialize()
 	}
 
 	//タイトルシーンから始める
-	ChangeScene(eSceneType::E_TITLE);
+	ChangeScene(eSceneType::E_RESULT);
 
 }
 
@@ -179,6 +180,9 @@ SceneBase* SceneManager::CreateScene(eSceneType scene_type)
 
 	case eSceneType::E_RANKING_DISP:
 		return new RankingDispScene;
+
+	case eSceneType::E_CREDIT:
+		return new EndScene;
 
 	case eSceneType::E_RANKING_INPUT:
 		return new RankingInputScene;

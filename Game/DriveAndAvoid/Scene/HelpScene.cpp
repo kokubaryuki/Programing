@@ -44,7 +44,6 @@ eSceneType HelpScene::Update()
 			}
 		
 	return GetNowScene();
-
 }
 
 
