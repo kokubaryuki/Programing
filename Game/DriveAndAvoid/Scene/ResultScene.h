@@ -2,14 +2,15 @@
 
 #include"SceneBase.h"
 
-class ResultScene:public SceneBase
+class ResultScene :public SceneBase
 {
 private:
 	int back_ground;    //”wŒi‰æ‘œ
 	int score;          //ƒXƒRƒA
 	int enemy_count[3]; //“G‚ÌƒJƒEƒ“ƒg
 	int enemy_image[3]; //“G‰æ‘œ
-	
+	int result[3];
+	int result_count[4] = {0,0,0,0};
 
 public:
 	ResultScene();
