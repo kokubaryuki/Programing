@@ -21,7 +21,7 @@ private:
 	int enemy_image[3];
 	int enemy_count[3];
 	int SHandle;
-	Player* player[4] = {};
+	Player* player[4];
 	
 
 	/// //////////////////////////////////////////////////
@@ -32,6 +32,7 @@ private:
 	Mphase phase = Mphase::READY;
 	int readycount = 0;
 	int readysound = 0;
+	Vector2D n;
 	/////////////////////////////////////////////////////
 public:
 	GameMainScene();
@@ -49,7 +50,9 @@ private:
 	void ReadHighScore();
 	//“–‚½‚è”»’è
 	bool IsHitCheck(Player* p1, Player* p2);
-
+	float Dot(Vector2D& a, Vector2D& b);
+	void CalcRepulsionVector(Player* p1, Player* p2);
+	
 };
 
 

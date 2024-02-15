@@ -85,7 +85,7 @@ void Player::Update()
 	if (smash_available == false)
 	{
 		smash_cool_count++;
-		if (smash_cool_count >= 600) {
+		if (smash_cool_count >= 420) {
 			smash_available = true;
 			smash_cool_count = 0;
 		}
@@ -210,7 +210,17 @@ void Player::Draw()
 		//ê›íËÇå≥Ç…ñﬂÇ∑ÅB
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
-	
+	if (smash_available) {
+		DrawCircle(dspos.x - 3, dspos.y - 3 - 10, 15, 0xffffff, FALSE,2);
+		DrawCircle(dspos.x - 3, dspos.y - 3 - 10, 14, 0x1000ff, TRUE);
+	}
+	else {
+		DrawCircle(dspos.x - 3, dspos.y - 3 - 10, 15, 0xffffff, FALSE, 2);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 75);
+		DrawCircle(dspos.x - 3, dspos.y - 3 - 10, 14, 0x1000ff, TRUE);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	}
+
 
 	DrawRotaGraphF(location.x, location.y, 1.0, angle, image, TRUE);
 
@@ -416,6 +426,21 @@ void Player::Smash()
 			}			
 		}
 	}
+}
+
+Vector2D Player::GetDirection() const
+{
+	return move_direction;
+}
+
+float Player::GetMass() const
+{
+	return mass;
+}
+
+void Player::AddMoveDirection(Vector2D add)
+{
+	move_direction += add;
 }
 
 

@@ -100,22 +100,24 @@ eSceneType GameMainScene::Update()
 		case 2:
 			if (IsHitCheck(player[0], player[1]))
 			{
-
+				//CalcRepulsionVector(player[0], player[1]);
 			}
 			break;
 		case 3:
 			for (int i = 0; i < 3; i++) {
 				if (IsHitCheck(player[combination3[i][0]], player[combination3[i][1]]))
 				{
-
+					//CalcRepulsionVector(player[combination3[i][0]], player[combination3[i][1]]);
 				}
 			}
 			break;
 		case 4:
 			for (int i = 0; i < 6; i++) {
+
 				if (IsHitCheck(player[combination4[i][0]], player[combination4[i][1]]))
 				{
 
+					//CalcRepulsionVector(player[combination4[i][0]], player[combination4[i][1]]);
 				}
 			}
 			break;
@@ -202,9 +204,6 @@ eSceneType GameMainScene::Update()
 	return GetNowScene();
 }
 
-
-
-
 //描画処理
 void GameMainScene::Draw() const
 {
@@ -250,8 +249,6 @@ void GameMainScene::Draw() const
 	//	fy + 40.0f, GetColor(255, 0, 0), TRUE);
 	//DrawBoxAA(fx, fy + 20.0f, fx + 100.0f, fy + 40.0f, GetColor(0, 0, 0), FALSE);
 }
-
-
 
 //終了時処理
 void GameMainScene::Finalize()
@@ -330,39 +327,81 @@ void GameMainScene::ReadHighScore()
 //当たり判定処理（プレイヤーと敵）
 bool GameMainScene::IsHitCheck(Player* p1, Player* p2)
 {
-	//プレイヤー同士の距離を測る
-	Vector2D ab = p1->GetLocation() - p2->GetLocation();
+	//プレイヤー同士の距離を測る(軸)
+	Vector2D a = p1->GetLocation();
+	Vector2D b = p2->GetLocation();
+	Vector2D ab = a - b;
 	//長さを図る
 	float length = std::sqrtf(std::powf(ab.x, 2.0f) + std::powf(ab.y, 2.0f));
 	
-	float hit = length - p1->GetRad() - p2->GetRad();
-	/*if (hit<0.0f) {
-		return true;
-	}*/
 	//正規化する
-	Vector2D n = Vector2D(ab.x / length, ab.y / length);
-
-	//プレイヤーがバリアを貼っていたら、当たり判定を無視する
-	if (p1->IsBarrier())
-	{
-		return false;
-	}
+	n = Vector2D(ab.x / length, ab.y / length);
 	
-	//敵の情報が無ければ、当たり判定を無視する
-	if (p2 == nullptr)
-	{
-		return false;
+	float hit = length - p1->GetRad() - p2->GetRad();
+	
+	if (hit<0.0f) {
+		return true;
 	}
-
-	//位置情報の差分を取得
-	Vector2D diff_location = p1->GetLocation() - p2->GetLocation();
-
-	//当たり判定サイズの大きさを取得
-	Vector2D box_ex = p1->GetBoxSize() + p2->GetBoxSize();
-
-
+	////プレイヤーがバリアを貼っていたら、当たり判定を無視する
+	//if (p1->IsBarrier())
+	//{
+	//	return false;
+	//}
+	//
+	////敵の情報が無ければ、当たり判定を無視する
+	//if (p2 == nullptr)
+	//{
+	//	return false;
+	//}
+	////位置情報の差分を取得
+	//Vector2D diff_location = p1->GetLocation() - p2->GetLocation();
+	////当たり判定サイズの大きさを取得
+	//Vector2D box_ex = p1->GetBoxSize() + p2->GetBoxSize();
 	//コリジョンデータより位置情報の差が小さいなら、ヒットする
 	//return ((fabsf(diff_location.x) < box_ex.x) && (fabsf(diff_location.y) < (box_ex.y)));
+}
+
+float GameMainScene::Dot(Vector2D& a, Vector2D& b)
+{
+	return a.x * b.x + a.y * b.y;
+}
+
+void GameMainScene::CalcRepulsionVector(Player* p1,Player* p2)
+{
+	//正射影の長さを求める（相手の円に対する当たりの強さ）
+	Vector2D amd = p1->GetDirection();
+	Vector2D bmd = p2->GetDirection();
+	//p1(a)がp2(b)に対する当たりの強さ
+	float apower = Dot(amd, n);
+	//p2(b)がp1(a)に対する当たりの強さ
+	float bpower = Dot(bmd, n);
+
+	//それぞれの垂直ベクトル,水平ベクトルを求める
+	Vector2D avx = n * apower;	//の垂直
+	Vector2D avy = amd - avx;	//水平
+
+	Vector2D bvx = n * bpower;
+	Vector2D bvy = bmd - bvx;
+
+	//反発係数
+	float e = 0.8f;
+	float am = p1->GetMass();
+	float bm = p2->GetMass();
+
+	//反発後の速度を求める
+	float as2 = (am * apower + bm * bpower - (e * bm * (apower - bpower))) / (am + bm);
+	float bs2 = (am * apower + bm * bpower + (e * am * (apower - bpower))) / (am + bm);
+
+	//速度を直線状のベクトルに変換
+	Vector2D avx2 = n * as2;
+	Vector2D bvx2 = n * bs2;
+
+	Vector2D av2 = avy + avx2;
+	Vector2D bv2 = bvy + bvx2;
+
+	//移動ベクトルに反発する速度ベクトルを足す
+	p1->AddMoveDirection(av2);
+	p2->AddMoveDirection(bv2);
 }
 
 

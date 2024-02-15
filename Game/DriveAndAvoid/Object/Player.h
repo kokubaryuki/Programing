@@ -44,6 +44,8 @@ private:
 	
 	bool smash_available = true;
 	int smash_cool_count = 0;
+
+	//float smash_draw_rate = 600.0f - smash_cool_count
 	/******************/
 	float myrad = 16.0f;					//半径
 	int mass = DX_PI * myrad * myrad;	//質量(面積)
@@ -99,7 +101,9 @@ public:
 	int GetBarriarCount()const;    //バリアの枚数取得
 	bool IsBarrier()const;         //バリアは有効か？を取得
 	//void Playerdie() const;        // プレイヤー死ぬ
-
+	Vector2D GetDirection()const;
+	float GetMass()const;
+	void AddMoveDirection(Vector2D add);
 private:
 
 	void Movement();   //移動処理
