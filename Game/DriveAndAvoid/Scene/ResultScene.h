@@ -11,11 +11,16 @@ class ResultScene:public SceneBase
 {
 private:
 	int back_ground;    //”wŒi‰æ‘œ
+	int bimage;
 	int score;          //ƒXƒRƒA
 	int resultimage[4];
 	int winnerimage;
 	MODE mode = MODE::ANNOUNCEMENT;
 	int count = 0;
+	int resultse;
+	int TranceRate = 0;
+	int a = 0;
+	int b = 0;
 public:
 	ResultScene();
 	virtual~ResultScene();

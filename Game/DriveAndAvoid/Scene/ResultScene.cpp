@@ -17,6 +17,7 @@ ResultScene::~ResultScene()
 //初期化処理
 void ResultScene::Initialize()
 {
+	count = 0;
 	resultimage[0] = LoadGraph("Resource/images/PLAYER1.png");
 	resultimage[1] = LoadGraph("Resource/images/PLAYER2.png");
 	resultimage[2] = LoadGraph("Resource/images/PLAYER3.png");
@@ -24,7 +25,11 @@ void ResultScene::Initialize()
 	winnerimage = LoadGraph("Resource/images/WINNER.png");
 	//画像の読込み
 	back_ground = LoadGraph("Resource/images/RESULT.png");
-
+	
+	bimage = LoadGraph("Resource/images/RESULTBACK.png");
+	
+	resultse = LoadSoundMem("Resource/SE/RESULT.mp3");
+	
 	//エラーチェック
 	if (back_ground == -1)
 	{
@@ -40,8 +45,25 @@ eSceneType ResultScene::Update()
 {
 	switch (mode) {
 	case MODE::ANNOUNCEMENT:
+		if (count == 50) 
+		{
+			PlaySoundMem(resultse, DX_PLAYTYPE_BACK, TRUE);
+		}
 		count++;
+		if (count == 120) 
+		{
+			PlaySoundMem(resultse, DX_PLAYTYPE_BACK, TRUE);
+		}
 
+		if (count <= 70) {
+			a = count;
+		}
+		if (90 <= count && count <= 160) {
+			b = count-90;
+		}
+		if (count == 240) {
+			mode = MODE::FREE;
+		}
 		break;
 	case MODE::FREE:
 		//Bボタンでランキングに移動する
@@ -65,9 +87,11 @@ void ResultScene::Draw() const
 {
 	//背景画像を描画
 	DrawGraph(0, -66, back_ground, TRUE);
-	DrawGraph(378, 200, winnerimage, TRUE);
-	DrawGraph(350, 350, resultimage[score], TRUE);
 
+	DrawGraph(2478-a*30, 200, winnerimage, TRUE);
+	DrawGraph(2450-b*30, 350, resultimage[score], TRUE);
+
+	DrawRotaGraph(1050, 650,  1.0f, 0.0f, bimage, TRUE);
 }
 
 //終了時処理
