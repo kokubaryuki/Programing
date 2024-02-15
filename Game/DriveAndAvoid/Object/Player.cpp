@@ -3,7 +3,7 @@
 #include"cmath"
 #include "DxLib.h"
 
-Player::Player(int pad,float x,float y) :is_active(false), image(NULL), box_size(0.0f),
+Player::Player(int pad,float x,float y) :image(NULL), box_size(0.0f),
 angle(0.0f), speed(0.0f), hp(0.0f), fuel(0.0f), barrier_count(0),barrier(nullptr)
 {
 	mypad = pad;
@@ -19,7 +19,10 @@ Player::~Player()
 //初期化処理
 void Player::Initialize()
 {
-	is_active = true;
+	carimage[0] = LoadGraph("Resource/images/car1.png");
+	carimage[1] = LoadGraph("Resource/images/car2.png");
+	carimage[2] = LoadGraph("Resource/images/car3.png");
+	carimage[3] = LoadGraph("Recource/images/car4.png");
 	//location = Vector2D(320.0f, 380.0f);
 	box_size = Vector2D(31.0f, 60.0f);
 	angle = 0.0f;
@@ -63,21 +66,6 @@ void Player::Initialize()
 //更新処理
 void Player::Update()
 {
-	//操作不可能状態であれば、自身を回転させる
-	/*if (!is_active)
-	{
-		angle += DX_PI_F / 24.0f;
-		speed = 1.0f;
-		if (angle >= DX_PI_F * 4.0f)
-		{
-			is_active = true;
-		}
-		return;
-	}*/
-
-	//燃料の消費
-	//fuel -= speed;
-
 	//吹っ飛ばされ状態じゃなければ、スマッシュ可能
 	if (player_state != STATE::OUTOFCONTROLL) {
 		Smash();
@@ -92,11 +80,10 @@ void Player::Update()
 	}
 
 	//スマッシュ攻撃状態じゃなければ、ドリフト可能
-	if (player_state != STATE::SMASH && 0 < stamina) {
+	if (player_state != STATE::SMASH && 0 < stamina) 
+	{
 		Drift();
 	}
-	
-
 
 	//移動処理はスマッシュ攻撃と吹っ飛ばされ状態以外なら
 	if (player_state != STATE::SMASH && player_state != STATE::OUTOFCONTROLL) 
@@ -128,14 +115,13 @@ void Player::Update()
 		}
 	}
 
-
 	//残像を表示(エフェクト描画)
 	if (player_state == STATE::DRIFT || player_state == STATE::SMASH)
 	{
 		if (drawing_count % DRAWING_INTERVAL == 0)
 		{
 			if (effect[drawing_num] == nullptr) {
-				effect[drawing_num] = new Effect(location.x, location.y, 1.0f, angle, image);
+				effect[drawing_num] = new Effect(location.x, location.y, 1.0f, angle, mypad);
 				drawing_num++;
 				if (19 < drawing_num) {
 					drawing_num = 0;
@@ -222,45 +208,34 @@ void Player::Draw()
 	}
 
 
-	DrawRotaGraphF(location.x, location.y, 1.0, angle, image, TRUE);
+	DrawRotaGraphF(location.x, location.y, 1.0, angle, carimage[mypad], TRUE);
 
 	//バリアが生成されていたら、描画を行う
 	if (barrier != nullptr)
 	{
 		barrier->Draw(this->location);
 	}
-	DrawFormatString(700, 12, 0xffffff, " move_data[1].x = %f", move_data[1].first.x);
-	DrawFormatString(700, 36, 0xffffff, " move_data[1].y = %f", move_data[1].first.y);
-	//DrawFormatString(700, 36, 0xffffff, "move_direction.x = %f, y = %f", move_direction.x, move_direction.y);
-	//DrawFormatString(700, 78, 0xffffff, "sqrt_val = %f", sqrt_val);
-	if (Interpolation_rate == DRIFT_RATE) {
-		DrawFormatString(700, 90, 0xffffff, "DRIFT!!!!");
-	}
-	else 
-	{
-		DrawFormatString(700, 90, 0xffffff, "DRIVE");
-	}
-	DrawCircle(location.x, location.y, myrad, 0xffffff, TRUE);
+
+	//DrawCircle(location.x, location.y, myrad, 0xffffff, false,3);
 }
 
 
 //終了時処理
 void Player::Finalize()
 {
+	if (CheckSoundMem(driftse)) {
+		StopSoundMem(driftse);
+	}
 	//読み込んだ画像を削除
 	DeleteGraph(image);
-
+	for (int i = 0; i < 4; i++) {
+		DeleteSoundMem(carimage[i]);
+	}
 	//バリアが生成されていたら、削除する
 	if (barrier != nullptr)
 	{
 		delete barrier;
 	}
-}
-
-//状態設定処理
-void Player::SetActive(bool flg)
-{
-	this->is_active = flg;
 }
 
 //体力減少処理
@@ -448,6 +423,11 @@ float Player::GetMass() const
 void Player::AddMoveDirection(Vector2D add)
 {
 	move_direction = add;
+}
+
+int Player::GetPlayerNum()
+{
+	return mypad + 1;
 }
 
 void Player::SetLocation(Vector2D loco)

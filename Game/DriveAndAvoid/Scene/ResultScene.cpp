@@ -6,11 +6,7 @@
 
 ResultScene::ResultScene() :back_ground(NULL), score(0)
 {
-	for (int i = 0; i < 3; i++)
-	{
-		enemy_image[i] = NULL;
-		enemy_count[i] = NULL;
-	}
+
 }
 
 ResultScene::~ResultScene()
@@ -21,21 +17,23 @@ ResultScene::~ResultScene()
 //初期化処理
 void ResultScene::Initialize()
 {
-	
+	count = 0;
+	resultimage[0] = LoadGraph("Resource/images/PLAYER1.png");
+	resultimage[1] = LoadGraph("Resource/images/PLAYER2.png");
+	resultimage[2] = LoadGraph("Resource/images/PLAYER3.png");
+	resultimage[3] = LoadGraph("Resource/images/PLAYER4.png");
+	winnerimage = LoadGraph("Resource/images/WINNER.png");
 	//画像の読込み
-	back_ground = LoadGraph("Resource/images/Title.png");
-	int result = LoadDivGraph("Resource/images/car.bmp", 3, 3, 1, 63, 120,
-		enemy_image);
-
+	back_ground = LoadGraph("Resource/images/RESULT.png");
+	
+	bimage = LoadGraph("Resource/images/RESULTBACK.png");
+	
+	resultse = LoadSoundMem("Resource/SE/RESULT.mp3");
+	
 	//エラーチェック
 	if (back_ground == -1)
 	{
-		throw("Resource/images/back.bmpがありません\n");
-	}
-
-	if (result == -1)
-	{
-		throw("Resource/images/car.bmpがありません\n");
+		throw("Resource/images/RESULT.pngがありません\n");
 	}
 	//ゲームの結果
 	ReadResultData();
@@ -45,11 +43,42 @@ void ResultScene::Initialize()
 //更新処理
 eSceneType ResultScene::Update()
 {
-	//Bボタンでランキングに移動する
-	if (InputControl::GetButtonDown(0,XINPUT_BUTTON_B))
-	{
-		return eSceneType::E_TITLE;
+	switch (mode) {
+	case MODE::ANNOUNCEMENT:
+		if (count == 50) 
+		{
+			PlaySoundMem(resultse, DX_PLAYTYPE_BACK, TRUE);
+		}
+		count++;
+		if (count == 120) 
+		{
+			PlaySoundMem(resultse, DX_PLAYTYPE_BACK, TRUE);
+		}
+
+		if (count <= 70) {
+			a = count;
+		}
+		if (90 <= count && count <= 160) {
+			b = count-90;
+		}
+		if (count == 240) {
+			mode = MODE::FREE;
+		}
+		break;
+	case MODE::FREE:
+		//Bボタンでランキングに移動する
+		if (InputControl::GetButtonDown(0, XINPUT_BUTTON_B))
+		{
+			return eSceneType::E_TITLE;
+		}
+		break;
+	case MODE::FINISH:
+
+		break;
+	default:
+		break;
 	}
+	
 	return GetNowScene();
 }
 
@@ -57,37 +86,12 @@ eSceneType ResultScene::Update()
 void ResultScene::Draw() const
 {
 	//背景画像を描画
-	DrawGraph(0, 0, back_ground, TRUE);
+	DrawGraph(0, -66, back_ground, TRUE);
 
-	////スコア等表示領域
-	//DrawBox(150, 150, 490, 330, GetColor(0, 153, 0), TRUE);
-	//DrawBox(150, 150, 490, 330, GetColor(0, 0, 0), FALSE);
-	//DrawBox(500, 0, 640, 480, GetColor(0, 153, 0), TRUE);
+	DrawGraph(2478-a*30, 200, winnerimage, TRUE);
+	DrawGraph(2450-b*30, 350, resultimage[score], TRUE);
 
-	SetFontSize(60);
-	DrawString(450, 230, "ランキング表", GetColor(255,215,0));
-	SetFontSize(55);
-	DrawString(395, 370, "1位:", GetColor(255,215,0));
-	SetFontSize(45);
-	DrawString(395, 440, "2位:", GetColor(119,136,153));
-	DrawString(395, 510, "3位:", GetColor(160,69,19));
-	DrawString(395, 570, "4位:", GetColor(255, 255, 255));
-
-	
-
-
-
-
-	for (int i = 0; i < 3; i++)
-	{
-		//D/*rawRotaGraph(230, 230 + (i * 20), 0.3f, DX_PI_F / 2, enemy_image[i], TRUE);
-		//DrawFormatString(260, 222 + (i * 21), GetColor(255, 255, 255), "%6d x %4d=%6d", enemy_count[i], (i + 1) * 50, (i + 1) * 50 * enemy_count[i]);*/
-	}
-
-	/*DrawString(180, 290, "スコア", GetColor(0, 0, 0));
-	DrawFormatString(180, 290, 0xFFFFFF, "      =%6d", score);*/
-
-	
+	DrawRotaGraph(1050, 650,  1.0f, 0.0f, bimage, TRUE);
 }
 
 //終了時処理
@@ -95,9 +99,10 @@ void ResultScene::Finalize()
 {
 	//読み込んだ画像を削除
 	DeleteGraph(back_ground);
-	for (int i = 0; i < 3; i++)
+	DeleteGraph(winnerimage);
+	for (int i = 0; i < 4; i++)
 	{
-		DeleteGraph(enemy_image[i]);
+		DeleteGraph(resultimage[i]);
 	}
 
 }
@@ -125,11 +130,11 @@ void ResultScene::ReadResultData()
 	fscanf_s(fp, "%d,\n",&score);
 
 
-	//避けた数と得点を取得
-	for(int i=0;i<3;i++)
-	{
-		fscanf_s(fp, "%d,\n", &enemy_count[i]);
-	}
+	////避けた数と得点を取得
+	//for(int i=0;i<3;i++)
+	//{
+	//	fscanf_s(fp, "%d,\n", &enemy_count[i]);
+	//}
 
 	//ファイルクローズ
 	fclose(fp);

@@ -14,7 +14,7 @@
 #define DRIFT_RATE			0.075f		//ドリフト状態
 #define DRIVE_RATE			0.010f		//ドライブ状態
 #define SMASH_POWER			300.0f		//スマッシュパワー
-#define DRAWING_INTERVAL	2			//エフェクト描画間隔
+#define DRAWING_INTERVAL	5			//エフェクト描画間隔
 #define MAX_STAMINA			300.0f		//スタミナ最大値(60*7 -> 7秒)
 
 enum class STATE {
@@ -30,7 +30,6 @@ enum class STATE {
 class Player
 {
 private:
-	bool is_active;   //有効状態か？
 	int image;        //画像データ
 	Vector2D location;//位置座標
 	Vector2D box_size;//当たり判定
@@ -72,11 +71,12 @@ private:
 	Effect* effect[20];
 	int drawing_count = 0;
 	int drawing_num = 0;
-	int stamina = 420;
+	int stamina = 300;
 	float stamina_ratio = (stamina / MAX_STAMINA) * 100.0f;
 	bool can_drift = true;
 	int driftse;
 	Vector2D dspos;
+	int carimage[4];
 	/******************/
 public:
 	Player(int pad,float x, float y);
@@ -88,8 +88,6 @@ public:
 	void Finalize();   //終了処理
 
 public:
-
-	void SetActive(bool flg);      //有効フラグ設定
 	void DecreaseHp(float velue);  //体力減少処理
 	Vector2D GetLocation()const;   //位置座標取得
 	float GetRad()const;		   //半径取得
@@ -104,6 +102,7 @@ public:
 	float GetMass()const;
 	void AddMoveDirection(Vector2D add);
 	void SetLocation(Vector2D loco);
+	int GetPlayerNum();
 private:
 
 	void Movement();   //移動処理

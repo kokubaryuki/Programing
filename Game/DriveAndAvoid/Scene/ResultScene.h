@@ -1,15 +1,26 @@
 #pragma once
 
 #include"SceneBase.h"
+enum class MODE {
+	ANNOUNCEMENT,
+	FREE,
+	FINISH
+};
 
 class ResultScene:public SceneBase
 {
 private:
 	int back_ground;    //”wŒi‰æ‘œ
+	int bimage;
 	int score;          //ƒXƒRƒA
-	int enemy_count[3]; //“G‚ÌƒJƒEƒ“ƒg
-	int enemy_image[3]; //“G‰æ‘œ
-
+	int resultimage[4];
+	int winnerimage;
+	MODE mode = MODE::ANNOUNCEMENT;
+	int count = 0;
+	int resultse;
+	int TranceRate = 0;
+	int a = 0;
+	int b = 0;
 public:
 	ResultScene();
 	virtual~ResultScene();
