@@ -37,6 +37,10 @@ private:
 	Vector2D n;
 	int DownCount = 0;
 	int back_image;
+	int readyimage[4];
+	int rinum = 0;
+	int deathse;
+	int winner;
 	/////////////////////////////////////////////////////
 public:
 	GameMainScene();
@@ -50,8 +54,6 @@ public:
 	virtual eSceneType GetNowScene()const override;
 
 private:
-	//ハイスコア読込み処理
-	void ReadHighScore();
 	//円と円の当たり判定
 	bool IsHitCheck(Player* p1, Player* p2);
 	//内積

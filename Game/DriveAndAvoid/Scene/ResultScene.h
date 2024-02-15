@@ -1,7 +1,11 @@
 #pragma once
 
 #include"SceneBase.h"
-
+enum class PHASE {
+	ANNOUNCEMENT,
+	FREE,
+	FINISH
+};
 class ResultScene:public SceneBase
 {
 private:
@@ -9,7 +13,10 @@ private:
 	int score;          //スコア
 	int enemy_count[3]; //敵のカウント
 	int enemy_image[3]; //敵画像
-
+	int resultimage[4];
+	int winnerimage;
+	PHASE phase = PHASE::ANNOUNCEMENT;
+	int count = 0;
 public:
 	ResultScene();
 	virtual~ResultScene();

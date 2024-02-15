@@ -6,7 +6,9 @@
 GameMainScene::GameMainScene() :high_score(0), back_ground(NULL),
 barrier_image(NULL), mileage(0) /*,player(nullptr)*/ 
 {
-
+	for (int i = 0; i < 4; i++) {
+		player[i] = nullptr;
+	}
 }
 
 GameMainScene::~GameMainScene()
@@ -17,19 +19,20 @@ GameMainScene::~GameMainScene()
 //初期化処理
 void GameMainScene::Initialize()
 {
-	Number_of_connections = 0;
-	Number_of_connections = GetJoypadNum();
+	Number_of_connections = 2;
+	//2本しか接続していないが、4が帰ってくる
+	//Number_of_connections = GetJoypadNum();
 	readysound = LoadSoundMem("Resource/SE/READY.mp3");
-
-	//高得点値を読み込む
-	ReadHighScore();
+	deathse = LoadSoundMem("Resource/SE/DEATH.mp3");
 	SHandle = LoadSoundMem("Resource/BGM/戦闘bgm.wav");
 	//画像の読込み
 	back_ground = LoadGraph("Resource/images/Stage.png");
 	back_image = LoadGraph("Resource/images/STAGEBACK.png");
 	barrier_image = LoadGraph("Resource/images/barrier.png");
-	//int result = LoadDivGraph("Resource/images/car.bmp", 3, 3, 1, 63, 120, enemy_image);
-
+	readyimage[0] = LoadGraph("Resource/images/r1.png");
+	readyimage[1] = LoadGraph("Resource/images/r2.png");
+	readyimage[2] = LoadGraph("Resource/images/r3.png");
+	readyimage[3] = LoadGraph("Resource/images/r4.png");
 
 	//エラーチェック
 	if (back_ground == -1)
@@ -65,27 +68,17 @@ void GameMainScene::Initialize()
 	player[1] = new Player(1, 1000, 50);
 	player[2] = new Player(2, 275, 670);
 	player[3] = new Player(3, 1000, 670);*/
-	//enemy = new Enemy* [10];
 
-	//オブジェクトの初期化
-	/*for (int i = 0; i < 4; i++) {
-		player[i]->Initialize();
-	}*/
 	for (int i = 0; i < Number_of_connections; i++) {
 		player[i]->Initialize();
 	}
-	//player->Initialize();
-
-	/*for (int i = 0; i < 10; i++)
-	{
-		enemy[i] = nullptr;
-	}*/
 	
 }
 
 //更新処理
 eSceneType GameMainScene::Update()
 {
+	float tmp_g = 0.0f;
 	switch (phase) 
 	{
 	case Mphase::READY:
@@ -93,8 +86,10 @@ eSceneType GameMainScene::Update()
 			PlaySoundMem(readysound, DX_PLAYTYPE_LOOP);
 		}
 		readycount++;
-		if (3 <= readycount / 60) 
+		rinum = readycount / 60;
+		if (4 <= readycount / 60) 
 		{
+			rinum = 0;
 			readycount = 0;
 			StopSoundMem(readysound);
 			phase = Mphase::GO;
@@ -109,6 +104,7 @@ eSceneType GameMainScene::Update()
 				if (player[i]->GetLocation().x < 215 || 1065 < player[i]->GetLocation().x ||
 					player[i]->GetLocation().y < 0 || 720 < player[i]->GetLocation().y)
 				{
+					PlaySoundMem(deathse, DX_PLAYTYPE_BACK, TRUE);
 					player[i]->Finalize();
 					delete player[i];
 					player[i] = nullptr;
@@ -117,6 +113,11 @@ eSceneType GameMainScene::Update()
 			}
 		}
 		if (Number_of_connections - 1 <= DownCount) {
+			for (int i = 0; i < 4; i++) {
+				if (player[i] != nullptr) {
+					winner = player[i]->GetPlayerNum();
+				}
+			}
 			phase = Mphase::FINISH;
 			DownCount = 0;
 			break;
@@ -184,7 +185,7 @@ void GameMainScene::Draw() const
 	//背景画像の画像
 	//DrawGraph(0, mileage % 480 - 480, back_ground, TRUE);
 
-	DrawRotaGraph(640, 360, 1.0, 0, back_image, false);
+	DrawRotaGraph(640, 360, 1.0, 0, back_image, FALSE);
 	DrawGraph(225, mileage % 480, back_ground, TRUE);
 	//プレイヤーの描画
 	for (int i = 0; i < Number_of_connections; i++) {
@@ -198,7 +199,8 @@ void GameMainScene::Draw() const
 	case Mphase::READY:
 		
 		SetFontSize(30);
-		DrawFormatString(640, 360, 0x000000, "%f", a);
+		DrawRotaGraph(640, 360, 1.0f, 0.0, readyimage[rinum],TRUE);
+		//DrawFormatString(640, 400, 0x000000, "%f", a);
 		break;
 	case Mphase::GO:
 		break;
@@ -215,12 +217,7 @@ void GameMainScene::Draw() const
 void GameMainScene::Finalize()
 {
 	//スコアを計算する
-	int score = (mileage / 10 * 10);
-
-	for (int i = 0; i < 3; i++)
-	{
-		score = i;
-	}
+	int score = winner - 1;
 
 	//リザルトデータの書き込み
 	FILE* fp = nullptr;
@@ -237,12 +234,6 @@ void GameMainScene::Finalize()
 	//スコアを保存
 	fprintf(fp, "%d,\n", score);
 
-	//避けた数と得点を保存
-	for (int i = 0; i < 3; i++)
-	{
-		fprintf(fp, "%d,\n", enemy_count[i]);
-	}
-
 	//ファイルクローズ
 	fclose(fp);
 
@@ -251,7 +242,6 @@ void GameMainScene::Finalize()
 		if(player[i] != nullptr)
 		player[i]->Finalize();
 	}
-	//player->Finalize();
 	for (int i = 0; i < Number_of_connections; i++) {
 		delete player[i];
 	}
@@ -261,16 +251,6 @@ void GameMainScene::Finalize()
 eSceneType GameMainScene::GetNowScene() const
 {
 	return eSceneType::E_MAIN;
-}
-
-void GameMainScene::ReadHighScore()
-{
-	RankingData data;
-	data.Initialize();
-
-	high_score = data.GetScore(0);
-
-	data.Finalize();
 }
 
 //当たり判定処理（プレイヤーと敵）

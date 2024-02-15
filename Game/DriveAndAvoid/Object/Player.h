@@ -76,6 +76,7 @@ private:
 	bool can_drift = true;
 	int driftse;
 	Vector2D dspos;
+	int carimage[4];
 	/******************/
 public:
 	Player(int pad,float x, float y);
@@ -101,6 +102,7 @@ public:
 	float GetMass()const;
 	void AddMoveDirection(Vector2D add);
 	void SetLocation(Vector2D loco);
+	int GetPlayerNum();
 private:
 
 	void Movement();   //ˆÚ“®ˆ—

@@ -21,7 +21,11 @@ ResultScene::~ResultScene()
 //初期化処理
 void ResultScene::Initialize()
 {
-	
+	resultimage[0] = LoadGraph("Resource/images/PLAYER1.png");
+	resultimage[1] = LoadGraph("Resource/images/PLAYER2.png");
+	resultimage[2] = LoadGraph("Resource/images/PLAYER3.png");
+	resultimage[3] = LoadGraph("Resource/images/PLAYER4.png");
+	winnerimage = LoadGraph("Resource/images/WINNER.png");
 	//画像の読込み
 	back_ground = LoadGraph("Resource/images/RESULT.png");
 
@@ -38,11 +42,24 @@ void ResultScene::Initialize()
 //更新処理
 eSceneType ResultScene::Update()
 {
-	//Bボタンでランキングに移動する
-	if (InputControl::GetButtonDown(0,XINPUT_BUTTON_B))
-	{
-		return eSceneType::E_TITLE;
+	switch (phase) {
+	case PHASE::ANNOUNCEMENT:
+
+		break;
+	case PHASE::FREE:
+		//Bボタンでランキングに移動する
+		if (InputControl::GetButtonDown(0, XINPUT_BUTTON_B))
+		{
+			return eSceneType::E_TITLE;
+		}
+		break;
+	case PHASE::FINISH:
+
+		break;
+	default:
+		break;
 	}
+	
 	return GetNowScene();
 }
 
@@ -51,36 +68,9 @@ void ResultScene::Draw() const
 {
 	//背景画像を描画
 	DrawGraph(0, -66, back_ground, TRUE);
+	DrawGraph(378, 200, winnerimage, TRUE);
+	DrawGraph(350, 350, resultimage[score], TRUE);
 
-	////スコア等表示領域
-	//DrawBox(150, 150, 490, 330, GetColor(0, 153, 0), TRUE);
-	//DrawBox(150, 150, 490, 330, GetColor(0, 0, 0), FALSE);
-	//DrawBox(500, 0, 640, 480, GetColor(0, 153, 0), TRUE);
-
-	SetFontSize(60);
-	DrawString(450, 230, "ランキング表", GetColor(255,215,0));
-	SetFontSize(55);
-	DrawString(395, 370, "1位:", GetColor(255,215,0));
-	SetFontSize(45);
-	DrawString(395, 440, "2位:", GetColor(119,136,153));
-	DrawString(395, 510, "3位:", GetColor(160,69,19));
-	DrawString(395, 570, "4位:", GetColor(255, 255, 255));
-
-	
-
-
-
-
-	for (int i = 0; i < 3; i++)
-	{
-		//D/*rawRotaGraph(230, 230 + (i * 20), 0.3f, DX_PI_F / 2, enemy_image[i], TRUE);
-		//DrawFormatString(260, 222 + (i * 21), GetColor(255, 255, 255), "%6d x %4d=%6d", enemy_count[i], (i + 1) * 50, (i + 1) * 50 * enemy_count[i]);*/
-	}
-
-	/*DrawString(180, 290, "スコア", GetColor(0, 0, 0));
-	DrawFormatString(180, 290, 0xFFFFFF, "      =%6d", score);*/
-
-	
 }
 
 //終了時処理
@@ -88,9 +78,10 @@ void ResultScene::Finalize()
 {
 	//読み込んだ画像を削除
 	DeleteGraph(back_ground);
-	for (int i = 0; i < 3; i++)
+	DeleteGraph(winnerimage);
+	for (int i = 0; i < 4; i++)
 	{
-		DeleteGraph(enemy_image[i]);
+		DeleteGraph(resultimage[i]);
 	}
 
 }

@@ -62,7 +62,6 @@ void Player::Initialize()
 //更新処理
 void Player::Update()
 {
-
 	//吹っ飛ばされ状態じゃなければ、スマッシュ可能
 	if (player_state != STATE::OUTOFCONTROLL) {
 		Smash();
@@ -111,7 +110,6 @@ void Player::Update()
 			count = 0;
 		}
 	}
-
 
 	//残像を表示(エフェクト描画)
 	if (player_state == STATE::DRIFT || player_state == STATE::SMASH)
@@ -220,6 +218,9 @@ void Player::Draw()
 //終了時処理
 void Player::Finalize()
 {
+	if (CheckSoundMem(driftse)) {
+		StopSoundMem(driftse);
+	}
 	//読み込んだ画像を削除
 	DeleteGraph(image);
 
@@ -415,6 +416,11 @@ float Player::GetMass() const
 void Player::AddMoveDirection(Vector2D add)
 {
 	move_direction = add;
+}
+
+int Player::GetPlayerNum()
+{
+	return mypad + 1;
 }
 
 void Player::SetLocation(Vector2D loco)
