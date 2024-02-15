@@ -25,6 +25,9 @@ private:
 	
 
 	/// //////////////////////////////////////////////////
+	Vector2D Setlocation[3][4] = { { {275,380},{1000,380},{0,0}     ,{0,0}      },
+								   { {637,50} ,{275,670} ,{1000,670},{0,0}      },
+								   { {275,50} ,{1000,50} ,{275,670} ,{1000,670} } };
 	int Number_of_connections;
 	int combination3[3][2] = { {0,1}, {0,2}, {1,2} };
 	int combination4[6][2] = { {0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3} };
@@ -33,6 +36,8 @@ private:
 	int readycount = 0;
 	int readysound = 0;
 	Vector2D n;
+	int DownCount = 0;
+	static int ranking;
 	/////////////////////////////////////////////////////
 public:
 	GameMainScene();
@@ -44,6 +49,8 @@ public:
 	virtual void Finalize()override;
 
 	virtual eSceneType GetNowScene()const override;
+
+	int GetRanking() { return ranking; }
 
 private:
 	//ハイスコア読込み処理

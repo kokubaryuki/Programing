@@ -1,6 +1,7 @@
 #include"ResultScene.h"
 #include"../Object/RankingDate.h"
 #include"../Utility/InputControl.h"
+#include"GameMainScene.h"
 #include"DxLib.h"
 
 ResultScene::ResultScene() :back_ground(NULL), score(0)
@@ -36,7 +37,6 @@ void ResultScene::Initialize()
 	{
 		throw("Resource/images/car.bmp‚ª‚ ‚è‚Ü‚¹‚ñ\n");
 	}
-
 	//ƒQ[ƒ€‚ÌŒ‹‰Ê
 	ReadResultData();
 }

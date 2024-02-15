@@ -49,11 +49,29 @@ void GameMainScene::Initialize()
 	/*for (int i = 0; i < Number_of_connections + 1; i++) {
 		player[i] = new Player(i,);
 	}*/
+	//switch (Number_of_connections) {
+	//case 2:
+	//	for (int i = 0; i < Number_of_connections; i++) {
+	//		player[i] = new Player(i, Setlocation[Number_of_connections - 2][i].x, Setlocation[Number_of_connections - 2][i].y);
+	//	}
+	//	break;
+	//case 3:
+	//	for (int i = 0; i < Number_of_connections; i++) {
+	//		player[i] = new Player(i, Setlocation[Number_of_connections - 2][i].x, Setlocation[Number_of_connections - 2][i].y);
+	//	}
+	//	break;
+	//case 4:
+	//	for (int i = 0; i < Number_of_connections; i++) {
+	//		player[i] = new Player(i, Setlocation[Number_of_connections - 2][i].x, Setlocation[Number_of_connections - 2][i].y);
+	//	}
+	//	break;
+	//default:
+	//	break;
+	//}
 	player[0] = new Player(0, 275, 50);
 	player[1] = new Player(1, 1000, 50);
 	player[2] = new Player(2, 275, 670);
 	player[3] = new Player(3, 1000, 670);
-	//player = new Player();
 	//enemy = new Enemy* [10];
 
 	//オブジェクトの初期化
@@ -92,31 +110,61 @@ eSceneType GameMainScene::Update()
 	case Mphase::GO:
 		//プレイヤーの更新
 		for (int i = 0; i < 4; i++) {
-			player[i]->Update();
+			if (player[i] != nullptr) {
+				player[i]->Update();
+				//画面外に行ったら死ぬ
+				if (player[i]->GetLocation().x < 215 || 1065 < player[i]->GetLocation().x ||
+					player[i]->GetLocation().y < 0 || 720 < player[i]->GetLocation().y)
+				{
+					player[i]->Finalize();
+					delete player[i];
+					player[i] = nullptr;
+					DownCount++;
+				}
+			}
+		}
+		if (tmp - 1/*Number_of_connections - 1*/ <= DownCount) {
+			phase = Mphase::FINISH;
+			DownCount = 0;
+			break;
 		}
 		//コントローラーの接続数次第で当たり判定を行う数を変える
 		switch (tmp/*Number_of_connections*/)
 		{
 		case 2:
+			if (player[0] == nullptr || player[1] == nullptr) 
+			{
+				break;
+			}
 			if (IsHitCheck(player[0], player[1]))
 			{
-				//CalcRepulsionVector(player[0], player[1]);
+				CalcRepulsionVector(player[0], player[1]);
 			}
 			break;
 		case 3:
-			for (int i = 0; i < 3; i++) {
+			for (int i = 0; i < 3; i++) 
+			{
+				//死んでいるキャラの当たり判定は飛ばす
+				if (player[combination3[i][0]] == nullptr || player[combination3[i][1]] == nullptr) 
+				{
+					break;
+				}
 				if (IsHitCheck(player[combination3[i][0]], player[combination3[i][1]]))
 				{
-					//CalcRepulsionVector(player[combination3[i][0]], player[combination3[i][1]]);
+					CalcRepulsionVector(player[combination3[i][0]], player[combination3[i][1]]);
 				}
 			}
 			break;
 		case 4:
-			for (int i = 0; i < 6; i++) {
-
+			for (int i = 0; i < 6; i++) 
+			{
+				//死んでいるキャラの当たり判定は飛ばす
+				if (player[combination4[i][0]] == nullptr || player[combination4[i][1]] == nullptr) 
+				{
+					break;
+				}
 				if (IsHitCheck(player[combination4[i][0]], player[combination4[i][1]]))
 				{
-
 					CalcRepulsionVector(player[combination4[i][0]], player[combination4[i][1]]);
 				}
 			}
@@ -125,9 +173,10 @@ eSceneType GameMainScene::Update()
 			break;
 		}
 
-
 		break;
 	case Mphase::FINISH:
+
+		return eSceneType::E_RESULT;
 		break;
 	default:
 		break;
@@ -213,7 +262,9 @@ void GameMainScene::Draw() const
 
 	//プレイヤーの描画
 	for (int i = 0; i < 4; i++) {
-		player[i]->Draw();
+		if (player[i] != nullptr) {
+			player[i]->Draw();
+		}
 	}
 	float a = 4.0f - static_cast<float>(readycount / 60.0f);
 	switch (phase)
@@ -226,6 +277,7 @@ void GameMainScene::Draw() const
 	case Mphase::GO:
 		break;
 	case Mphase::FINISH:
+		
 		break;
 	default:
 		break;
@@ -258,7 +310,7 @@ void GameMainScene::Finalize()
 
 	for (int i = 0; i < 3; i++)
 	{
-		score += (i + 1) * 50 * enemy_count[i];
+		score = i;
 	}
 
 	//リザルトデータの書き込み
@@ -287,6 +339,7 @@ void GameMainScene::Finalize()
 
 	//動的確保したオブジェクトを削除する
 	for (int i = 0; i < 4; i++) {
+		if(player[i] != nullptr)
 		player[i]->Finalize();
 	}
 	//player->Finalize();
@@ -294,19 +347,6 @@ void GameMainScene::Finalize()
 		delete player[i];
 	}
 	
-
-	/*for (int i = 0; i < 10; i++)
-	{
-		if (enemy[i] != nullptr)
-		{
-			enemy[i]->Finalize();
-			delete enemy[i];
-			enemy[i] = nullptr;
-		}
-	}
-
-	delete[] enemy;*/
-
 }
 
 eSceneType GameMainScene::GetNowScene() const
@@ -340,6 +380,14 @@ bool GameMainScene::IsHitCheck(Player* p1, Player* p2)
 	float hit = length - p1->GetRad() - p2->GetRad();
 	
 	if (hit<0.0f) {
+		//めり込みを外す
+		float overlap_length = -1.0f + hit;
+		float am = p1->GetMass();
+		float bm = p2->GetMass();
+		Vector2D edit_location_a = a + n * (overlap_length * -bm / (am + bm));
+		Vector2D edit_location_b = b + n * (overlap_length *  am / (am + bm));
+		p1->SetLocation(edit_location_a);
+		p2->SetLocation(edit_location_b);
 		return true;
 	}
 	return false;

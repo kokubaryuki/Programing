@@ -180,9 +180,9 @@ void Player::Update()
 	{
 		StopSoundMem(driftse);
 		stamina++;
-		if (420 <= stamina) 
+		if (MAX_STAMINA <= stamina)
 		{
-			stamina = 420;
+			stamina = MAX_STAMINA;
 			can_drift = true;
 		}
 	}
@@ -414,11 +414,17 @@ void Player::Smash()
 		//スタート位置からターゲット位置までの線形補間した値を取得＆locationにセット
 		float lerp_posx = std::lerp(smash_start_point.x, smash_target_point.x, smash_rate);
 		float lerp_posy = std::lerp(smash_start_point.y, smash_target_point.y, smash_rate);
+		
+		//移動する前に速度ベクトルを出す
+		//Vector2D old_md = move_direction;
+		move_direction = Vector2D(lerp_posx, lerp_posy) - location;
+		move_direction = move_direction / 8.0f;
 		location = Vector2D(lerp_posx, lerp_posy);
 
 		//ターゲットポイントまで100%到達したら
 		if (1.0f <= smash_rate) {
 			smash_rate = 0.0f;
+
 			if (InputControl::GetButton(mypad, XINPUT_BUTTON_RIGHT_SHOULDER)) {
 				player_state = STATE::DRIFT;
 			}
@@ -442,6 +448,11 @@ float Player::GetMass() const
 void Player::AddMoveDirection(Vector2D add)
 {
 	move_direction = add;
+}
+
+void Player::SetLocation(Vector2D loco)
+{
+	location = loco;
 }
 
 

@@ -15,7 +15,7 @@
 #define DRIVE_RATE			0.010f		//ドライブ状態
 #define SMASH_POWER			300.0f		//スマッシュパワー
 #define DRAWING_INTERVAL	2			//エフェクト描画間隔
-#define MAX_STAMINA			420.0f			//スタミナ最大値(60*7 -> 7秒)
+#define MAX_STAMINA			300.0f		//スタミナ最大値(60*7 -> 7秒)
 
 enum class STATE {
 	IDLE = 0,		//アイドル
@@ -30,7 +30,6 @@ enum class STATE {
 class Player
 {
 private:
-	
 	bool is_active;   //有効状態か？
 	int image;        //画像データ
 	Vector2D location;//位置座標
@@ -47,7 +46,7 @@ private:
 
 	//float smash_draw_rate = 600.0f - smash_cool_count
 	/******************/
-	float myrad = 25.0f;					//半径
+	float myrad = 40.0f;					//半径
 	int mass = DX_PI * myrad * myrad;	//質量(面積)
 	Vector2D move_direction;		//速度ベクトル
 
@@ -104,6 +103,7 @@ public:
 	Vector2D GetDirection()const;
 	float GetMass()const;
 	void AddMoveDirection(Vector2D add);
+	void SetLocation(Vector2D loco);
 private:
 
 	void Movement();   //移動処理
