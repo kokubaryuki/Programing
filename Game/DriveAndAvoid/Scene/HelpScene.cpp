@@ -17,7 +17,7 @@ void HelpScene::Initialize()
 {
 	//画像の読込み
 	background_image = LoadGraph("Resource/images/help (3).png");
-
+	backSe = LoadSoundMem("Resource/SE/選択時の効果音.mp3");
 	//エラーチェック
 	if (background_image == -1)
 	{
@@ -32,6 +32,7 @@ eSceneType HelpScene::Update()
 	//Bボタンが押されたら、タイトルに戻る
 	if (InputControl::GetButtonDown(0,XINPUT_BUTTON_B))
 	{
+		PlaySoundMem(backSe, DX_PLAYTYPE_BACK);
 		return eSceneType::E_TITLE;
 	}
 	return GetNowScene();

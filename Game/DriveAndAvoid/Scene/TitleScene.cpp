@@ -21,7 +21,7 @@ void TitleScene::Initialize()
 	background_image = LoadGraph("Resource/images/Title2.png");
 	menu_image= LoadGraph("Resource/images/Title1.png");
 	cursor_image= LoadGraph("Resource/images/cone.bmp");
-
+	selectSe = LoadSoundMem("Resource/SE/選択時の効果音.mp3");
 	//エラーチェック
 	if (background_image == -1)
 	{
@@ -49,7 +49,7 @@ eSceneType TitleScene::Update()
 	//カーソル下移動
 	if (InputControl::GetButtonDown(0,XINPUT_BUTTON_DPAD_DOWN))
 	{
-		PlaySoundMem(SHandle, DX_PLAYTYPE_BACK, TRUE);
+		PlaySoundMem(selectSe, DX_PLAYTYPE_BACK, TRUE);
 		menu_cursor++;
 
 		//一番下に到達したら、一番上にする
@@ -62,6 +62,7 @@ eSceneType TitleScene::Update()
 	//カーソル上移動
 	if (InputControl::GetButtonDown(0,XINPUT_BUTTON_DPAD_UP))
 	{
+		PlaySoundMem(selectSe, DX_PLAYTYPE_BACK, TRUE);
 		menu_cursor--;
 		//一番上に到達したら、一番下にする
 		if (menu_cursor < 0)
@@ -70,16 +71,18 @@ eSceneType TitleScene::Update()
 		}
 	}
 
-if (InputControl::GetButtonDown(0,XINPUT_BUTTON_B))
+	if (InputControl::GetButtonDown(0,XINPUT_BUTTON_B))
 	{
-
+		PlaySoundMem(selectSe, DX_PLAYTYPE_BACK, TRUE);
+		StopSoundMem(SHandle);
 		switch (menu_cursor)
 		{
 		case 0:
 			return eSceneType::E_MAIN;
-		case 1:
-			return eSceneType::E_HELP;
 
+		case 1:
+		
+			return eSceneType::E_HELP;
 		default:
 			return eSceneType::E_END;
 
