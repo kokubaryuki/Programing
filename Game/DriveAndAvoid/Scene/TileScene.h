@@ -12,9 +12,7 @@ private:
 	int menu_cursor;     //メニューカーソル番号
 	int TitleBGM;        //タイトルのBGM用変数]
 	int SHandle;
-
-	int Loadsoundmem;
-
+	int selectSe;
 public:
 	TitleScene();
 	virtual~TitleScene();;

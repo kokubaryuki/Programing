@@ -6,9 +6,7 @@ class HelpScene :public SceneBase
 {
 private:
 	int background_image; //”wŒi‰æ‘œ
-	int SHandle;
-
-
+	int backSe;
 public:
 	HelpScene();
 	virtual~HelpScene();
