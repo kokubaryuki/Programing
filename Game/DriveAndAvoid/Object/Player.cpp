@@ -92,11 +92,10 @@ void Player::Update()
 	}
 
 	//スマッシュ攻撃状態じゃなければ、ドリフト可能
-	if (player_state != STATE::SMASH && 0 < stamina) {
+	if (player_state != STATE::SMASH && 0 < stamina) 
+	{
 		Drift();
 	}
-	
-
 
 	//移動処理はスマッシュ攻撃と吹っ飛ばされ状態以外なら
 	if (player_state != STATE::SMASH && player_state != STATE::OUTOFCONTROLL) 
@@ -229,18 +228,7 @@ void Player::Draw()
 	{
 		barrier->Draw(this->location);
 	}
-	DrawFormatString(700, 12, 0xffffff, " move_data[1].x = %f", move_data[1].first.x);
-	DrawFormatString(700, 36, 0xffffff, " move_data[1].y = %f", move_data[1].first.y);
-	//DrawFormatString(700, 36, 0xffffff, "move_direction.x = %f, y = %f", move_direction.x, move_direction.y);
-	//DrawFormatString(700, 78, 0xffffff, "sqrt_val = %f", sqrt_val);
-	if (Interpolation_rate == DRIFT_RATE) {
-		DrawFormatString(700, 90, 0xffffff, "DRIFT!!!!");
-	}
-	else 
-	{
-		DrawFormatString(700, 90, 0xffffff, "DRIVE");
-	}
-	DrawCircle(location.x, location.y, myrad, 0xffffff, TRUE);
+	DrawCircle(location.x, location.y, myrad, 0xffffff, false,3);
 }
 
 

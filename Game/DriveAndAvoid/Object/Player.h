@@ -72,7 +72,7 @@ private:
 	Effect* effect[20];
 	int drawing_count = 0;
 	int drawing_num = 0;
-	int stamina = 420;
+	int stamina = 300;
 	float stamina_ratio = (stamina / MAX_STAMINA) * 100.0f;
 	bool can_drift = true;
 	int driftse;
