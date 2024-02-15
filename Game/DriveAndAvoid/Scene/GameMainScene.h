@@ -41,6 +41,10 @@ private:
 	int rinum = 0;
 	int deathse;
 	int winner;
+	int count = 0;
+	int finishse;
+	int tapeimage;
+	int loco;
 	/////////////////////////////////////////////////////
 public:
 	GameMainScene();

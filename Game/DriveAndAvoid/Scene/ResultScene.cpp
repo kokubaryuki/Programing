@@ -6,11 +6,7 @@
 
 ResultScene::ResultScene() :back_ground(NULL), score(0)
 {
-	for (int i = 0; i < 3; i++)
-	{
-		enemy_image[i] = NULL;
-		enemy_count[i] = NULL;
-	}
+
 }
 
 ResultScene::~ResultScene()
@@ -42,18 +38,19 @@ void ResultScene::Initialize()
 //更新処理
 eSceneType ResultScene::Update()
 {
-	switch (phase) {
-	case PHASE::ANNOUNCEMENT:
+	switch (mode) {
+	case MODE::ANNOUNCEMENT:
+		count++;
 
 		break;
-	case PHASE::FREE:
+	case MODE::FREE:
 		//Bボタンでランキングに移動する
 		if (InputControl::GetButtonDown(0, XINPUT_BUTTON_B))
 		{
 			return eSceneType::E_TITLE;
 		}
 		break;
-	case PHASE::FINISH:
+	case MODE::FINISH:
 
 		break;
 	default:
@@ -109,11 +106,11 @@ void ResultScene::ReadResultData()
 	fscanf_s(fp, "%d,\n",&score);
 
 
-	//避けた数と得点を取得
-	for(int i=0;i<3;i++)
-	{
-		fscanf_s(fp, "%d,\n", &enemy_count[i]);
-	}
+	////避けた数と得点を取得
+	//for(int i=0;i<3;i++)
+	//{
+	//	fscanf_s(fp, "%d,\n", &enemy_count[i]);
+	//}
 
 	//ファイルクローズ
 	fclose(fp);

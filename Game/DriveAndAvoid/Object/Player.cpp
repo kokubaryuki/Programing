@@ -19,6 +19,10 @@ Player::~Player()
 //初期化処理
 void Player::Initialize()
 {
+	carimage[0] = LoadGraph("Resource/images/car1.png");
+	carimage[1] = LoadGraph("Resource/images/car2.png");
+	carimage[2] = LoadGraph("Resource/images/car3.png");
+	carimage[3] = LoadGraph("Recource/images/car4.png");
 	//location = Vector2D(320.0f, 380.0f);
 	box_size = Vector2D(31.0f, 60.0f);
 	angle = 0.0f;
@@ -117,7 +121,7 @@ void Player::Update()
 		if (drawing_count % DRAWING_INTERVAL == 0)
 		{
 			if (effect[drawing_num] == nullptr) {
-				effect[drawing_num] = new Effect(location.x, location.y, 1.0f, angle, image);
+				effect[drawing_num] = new Effect(location.x, location.y, 1.0f, angle, mypad);
 				drawing_num++;
 				if (19 < drawing_num) {
 					drawing_num = 0;
@@ -204,14 +208,15 @@ void Player::Draw()
 	}
 
 
-	DrawRotaGraphF(location.x, location.y, 1.0, angle, image, TRUE);
+	DrawRotaGraphF(location.x, location.y, 1.0, angle, carimage[mypad], TRUE);
 
 	//バリアが生成されていたら、描画を行う
 	if (barrier != nullptr)
 	{
 		barrier->Draw(this->location);
 	}
-	DrawCircle(location.x, location.y, myrad, 0xffffff, false,3);
+
+	//DrawCircle(location.x, location.y, myrad, 0xffffff, false,3);
 }
 
 
@@ -223,7 +228,9 @@ void Player::Finalize()
 	}
 	//読み込んだ画像を削除
 	DeleteGraph(image);
-
+	for (int i = 0; i < 4; i++) {
+		DeleteSoundMem(carimage[i]);
+	}
 	//バリアが生成されていたら、削除する
 	if (barrier != nullptr)
 	{

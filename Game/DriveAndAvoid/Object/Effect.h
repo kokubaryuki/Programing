@@ -10,12 +10,12 @@ private:
 	int my_y;
 	float my_exrate;
 	float my_angle;
-	float my_image;
+	int carimage[4];
 	int TranceRate;
-
+	int num;
 	bool finish;
 public:
-	Effect(int locoX,int locoY,float exrate,float angle, int image);
+	Effect(int locoX,int locoY,float exrate,float angle, int imagenum);
 	~Effect();
 
 	void Update();     //XVˆ—

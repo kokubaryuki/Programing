@@ -1,21 +1,20 @@
 #pragma once
 
 #include"SceneBase.h"
-enum class PHASE {
+enum class MODE {
 	ANNOUNCEMENT,
 	FREE,
 	FINISH
 };
+
 class ResultScene:public SceneBase
 {
 private:
 	int back_ground;    //”wŒi‰æ‘œ
 	int score;          //ƒXƒRƒA
-	int enemy_count[3]; //“G‚ÌƒJƒEƒ“ƒg
-	int enemy_image[3]; //“G‰æ‘œ
 	int resultimage[4];
 	int winnerimage;
-	PHASE phase = PHASE::ANNOUNCEMENT;
+	MODE mode = MODE::ANNOUNCEMENT;
 	int count = 0;
 public:
 	ResultScene();

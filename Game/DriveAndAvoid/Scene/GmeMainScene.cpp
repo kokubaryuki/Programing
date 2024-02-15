@@ -33,7 +33,8 @@ void GameMainScene::Initialize()
 	readyimage[1] = LoadGraph("Resource/images/r2.png");
 	readyimage[2] = LoadGraph("Resource/images/r3.png");
 	readyimage[3] = LoadGraph("Resource/images/r4.png");
-
+	tapeimage = LoadGraph("Resource/images/TAPE.png");
+	finishse = LoadSoundMem("Resource/SE/FINISH.mp3");
 	//エラーチェック
 	if (back_ground == -1)
 	{
@@ -169,8 +170,17 @@ eSceneType GameMainScene::Update()
 
 		break;
 	case Mphase::FINISH:
-
-		return eSceneType::E_RESULT;
+		count++;
+		if (count <= 50 ) {
+			loco = count;
+		}
+		if (count == 50) {
+			PlaySoundMem(finishse, DX_PLAYTYPE_BACK, TRUE);
+		}
+		if (170 < count) 
+		{
+			return eSceneType::E_RESULT;
+		}
 		break;
 	default:
 		break;
@@ -205,7 +215,7 @@ void GameMainScene::Draw() const
 	case Mphase::GO:
 		break;
 	case Mphase::FINISH:
-		
+		DrawRotaGraph(2240 - loco * 30, 360, 1.0f, 0.0, tapeimage, TRUE);
 		break;
 	default:
 		break;

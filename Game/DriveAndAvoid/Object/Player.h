@@ -14,7 +14,7 @@
 #define DRIFT_RATE			0.075f		//ドリフト状態
 #define DRIVE_RATE			0.010f		//ドライブ状態
 #define SMASH_POWER			300.0f		//スマッシュパワー
-#define DRAWING_INTERVAL	2			//エフェクト描画間隔
+#define DRAWING_INTERVAL	5			//エフェクト描画間隔
 #define MAX_STAMINA			300.0f		//スタミナ最大値(60*7 -> 7秒)
 
 enum class STATE {
