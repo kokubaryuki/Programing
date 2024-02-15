@@ -48,9 +48,10 @@ void EndScene::Draw() const
 
 	//引用先表示
 	SetFontSize(40);
-	DrawString(440, y, "BGM   musmus.main.jp", GetColor(255, 255, 255));
-	//SetFontSize(20);
-	DrawString(440, y+50, "SE    soundeffect-lab.info", GetColor(255, 255, 255));
+	DrawString(440, y, "BGM   musmus.main.jp", 0x000000);
+	DrawString(440, y + 50, "SE    soundeffect-lab.info", 0x000000);
+	DrawString(440, y + 100, "      効果音ラボ", 0x000000);
+
 }
 
 //終了時処理

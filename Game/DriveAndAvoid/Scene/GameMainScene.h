@@ -55,9 +55,11 @@ public:
 private:
 	//ハイスコア読込み処理
 	void ReadHighScore();
-	//当たり判定
+	//円と円の当たり判定
 	bool IsHitCheck(Player* p1, Player* p2);
+	//内積
 	float Dot(Vector2D& a, Vector2D& b);
+	//反発ベクトルを算出
 	void CalcRepulsionVector(Player* p1, Player* p2);
 	
 };
