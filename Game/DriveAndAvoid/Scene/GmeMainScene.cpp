@@ -27,7 +27,7 @@ void GameMainScene::Initialize()
 	back_ground = LoadGraph("Resource/images/Stage.png");
 	barrier_image = LoadGraph("Resource/images/barrier.png");
 	int result = LoadDivGraph("Resource/images/car.bmp", 3, 3, 1, 63, 120, enemy_image);
-
+	UI = LoadGraph("Resource/images/UI.png");
 
 	//エラーチェック
 	if (back_ground == -1)
@@ -43,6 +43,11 @@ void GameMainScene::Initialize()
 	if (barrier_image == -1)
 	{
 		throw("Resource/images/barrier.pngがありません\n");
+	}
+
+	if (UI == -1)
+	{
+		throw("Resource/images/UI.pngがありません\n");
 	}
 	//, 275:50, 1000:50, 275:670  1000:670
 	//オブジェクトの生成
@@ -210,6 +215,11 @@ void GameMainScene::Draw() const
 	//背景画像の画像
 	//DrawGraph(0, mileage % 480 - 480, back_ground, TRUE);
 	DrawGraph(225, mileage % 480, back_ground, TRUE);
+
+	DrawGraph(-120,70, UI,TRUE);       //%右上
+	DrawGraph(-120,490, UI,TRUE);      //%右下
+	DrawGraph(930,70, UI,TRUE);        //%左上
+	DrawGraph(930,490, UI,TRUE);       //%左下
 
 	//プレイヤーの描画
 	for (int i = 0; i < 4; i++) {

@@ -22,7 +22,7 @@ private:
 	int enemy_count[3];
 	int SHandle;
 	Player* player[4];
-	
+	int UI;
 
 	/// //////////////////////////////////////////////////
 	int Number_of_connections;
