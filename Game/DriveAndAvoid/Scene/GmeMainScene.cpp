@@ -117,7 +117,7 @@ eSceneType GameMainScene::Update()
 				if (IsHitCheck(player[combination4[i][0]], player[combination4[i][1]]))
 				{
 
-					//CalcRepulsionVector(player[combination4[i][0]], player[combination4[i][1]]);
+					CalcRepulsionVector(player[combination4[i][0]], player[combination4[i][1]]);
 				}
 			}
 			break;
@@ -342,23 +342,7 @@ bool GameMainScene::IsHitCheck(Player* p1, Player* p2)
 	if (hit<0.0f) {
 		return true;
 	}
-	////プレイヤーがバリアを貼っていたら、当たり判定を無視する
-	//if (p1->IsBarrier())
-	//{
-	//	return false;
-	//}
-	//
-	////敵の情報が無ければ、当たり判定を無視する
-	//if (p2 == nullptr)
-	//{
-	//	return false;
-	//}
-	////位置情報の差分を取得
-	//Vector2D diff_location = p1->GetLocation() - p2->GetLocation();
-	////当たり判定サイズの大きさを取得
-	//Vector2D box_ex = p1->GetBoxSize() + p2->GetBoxSize();
-	//コリジョンデータより位置情報の差が小さいなら、ヒットする
-	//return ((fabsf(diff_location.x) < box_ex.x) && (fabsf(diff_location.y) < (box_ex.y)));
+	return false;
 }
 
 float GameMainScene::Dot(Vector2D& a, Vector2D& b)

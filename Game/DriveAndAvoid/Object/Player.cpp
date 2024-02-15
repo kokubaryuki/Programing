@@ -240,6 +240,7 @@ void Player::Draw()
 	{
 		DrawFormatString(700, 90, 0xffffff, "DRIVE");
 	}
+	DrawCircle(location.x, location.y, myrad, 0xffffff, TRUE);
 }
 
 
@@ -440,7 +441,7 @@ float Player::GetMass() const
 
 void Player::AddMoveDirection(Vector2D add)
 {
-	move_direction += add;
+	move_direction = add;
 }
 
 

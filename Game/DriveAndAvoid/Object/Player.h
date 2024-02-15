@@ -47,7 +47,7 @@ private:
 
 	//float smash_draw_rate = 600.0f - smash_cool_count
 	/******************/
-	float myrad = 16.0f;					//半径
+	float myrad = 25.0f;					//半径
 	int mass = DX_PI * myrad * myrad;	//質量(面積)
 	Vector2D move_direction;		//速度ベクトル
 
